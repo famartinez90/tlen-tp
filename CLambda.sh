@@ -3,4 +3,4 @@ import sys
 from analyzer import parse
 
 exp_str = sys.argv[1]
-print parse(exp_str)
+print parse(str(exp_str))
