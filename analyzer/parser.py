@@ -2,7 +2,7 @@ import ply.yacc as yacc
 from .lexer import tokens
 
 def p_e_be(p):
-    'E : BE'
+    'E : C'
     p[0] = p[1]
 
 def p_e_n(p):
@@ -10,8 +10,8 @@ def p_e_n(p):
     p[0] = p[1]
 
 def p_e_paren_e(p):
-    'E : LPAREN E RPAREN'
-    p[0] = p[2]
+    'E : B'
+    p[0] = p[1]
 
 def p_be_c(p):
     'BE : C'
@@ -27,42 +27,39 @@ def p_be_b(p):
 
 def p_if_be_then_e_else_e(p):
     'C : IF BE THEN E ELSE E'
-    if p[4] != p[6]:
+    if p[4][1] != p[6][1]:
         print "Error: las dos opciones del if deben tener el mismo tipo"
     elif p[2]:
-        p[0] = p[4]
+        p[0] = (str(p[1]+' '+p[2][0]+' '+p[3]+' '+p[4][0]+' '+p[5]+' '+p[6][0]), '('+p[2][1]+'->'+p[4][1]+')')
     else:
-        p[0] = p[6]
+        p[0] = (str(p[1]+' '+p[2][0]+' '+p[3]+' '+p[4][0]+' '+p[5]+' '+p[6][0]), '('+p[2][1]+'->'+p[6][1]+')')
 
 def p_n_succ(p):
     'N : SUCC LPAREN N RPAREN'
-    p[0] = 'Nat'
+    p[0] = (str(p[1]+p[2]+p[3][0]+p[4]), 'Nat')
 
 def p_n_pred(p):
     'N : PRED LPAREN N RPAREN'
-    if p[3] < 1:
-        print "Error: no se puede hacer pred de 0"
-    else:
-        p[0] = 'Nat'
+    p[0] = (str(p[1]+p[2]+p[3][0]+p[4]), 'Nat')
 
 def p_b_iszero(p):
     'B : ISZERO LPAREN N RPAREN'
-    if p[3] != 'Nat':
+    if p[3][1] != 'Nat':
         return "Error: isZero espera un Nat"
     else:
-        p[0] = p[3]+'->Bool'
+        p[0] = (str(p[1]+p[2]+p[3][0]+p[4]), 'Bool')
 
 def p_b_true(p):
     'B : TRUE'
-    p[0] = 'Bool'
+    p[0] = (str(p[1]), 'Bool')
 
 def p_b_false(p):
     'B : FALSE'
-    p[0] = 'Bool'
+    p[0] = (str(p[1]), 'Bool')
 
 def p_n_nat(p):
     'N : ZERO'
-    p[0] = 'Nat'
+    p[0] = (str(p[1]), 'Nat')
 
 def p_error(p):
     print "Hubo un error en el parseo."
@@ -74,5 +71,7 @@ def p_error(p):
 parser = yacc.yacc(debug=True)
 
 def apply_parser(string):
-    if parser.parse(string) is not None:
-        return string+':'+parser.parse(string)
+    parseado = parser.parse(string)
+
+    if parseado is not None:
+        return parseado[0]+':'+parseado[1]
