@@ -19,12 +19,12 @@ def p_b_iszero(p):
         p[0] = (str(p[1]+p[2]+p[3][0]+p[4]), 'Bool')
 
 def p_b_true(p):
-    'B : TRUE'
-    p[0] = (str(p[1]), 'Bool')
+	'expression : TRUE'
+	p[0] = op.objetoParseado("TRUE", tokens.TRUE, tokens.BOOL)
 
 def p_b_false(p):
     'B : FALSE'
-    p[0] = (str(p[1]), 'Bool')
+    p[0] = op.objetoParseado("FALSE", tokens.FALSE, tokens.BOOL)
 
 def p_n_succ(p):
     'N : SUCC LPAREN N RPAREN'

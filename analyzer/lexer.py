@@ -13,7 +13,8 @@ tokens = [
     'IF',
     'THEN',
     'ELSE',
-    'ARROW'
+    'ARROW',
+	'BOOL'
 ]
 
 t_LPAREN = r'\('
