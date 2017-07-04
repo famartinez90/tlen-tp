@@ -9,11 +9,26 @@ tokens = [
     'LPAREN',
     'RPAREN',
     'SUCC',
-    'PRED'
+    'PRED',
+    'IF',
+    'THEN',
+    'ELSE'
 ]
 
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
+
+def t_IF(t):
+    r'(?i)if'
+    return t
+
+def t_THEN(t):
+    r'(?i)then'
+    return t
+
+def t_ELSE(t):
+    r'(?i)else'
+    return t
 
 def t_SUCC(t): 
     r'(?i)succ' 
