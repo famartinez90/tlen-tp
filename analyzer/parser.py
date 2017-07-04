@@ -1,21 +1,6 @@
 import ply.yacc as yacc
 from .lexer import tokens
-
-def p_e_be(p):
-    'E : C'
-    p[0] = p[1]
-
-def p_e_t(p):
-    'E : T'
-    p[0] = p[1]
-
-def p_be_c(p):
-    'BE : C'
-    p[0] = p[1]
-
-def p_be_t(p):
-    'BE : T'
-    p[0] = p[1]
+import objetoParseado as op
 
 def p_if_be_then_e_else_e(p):
     'C : IF BE THEN E ELSE E'
@@ -25,18 +10,6 @@ def p_if_be_then_e_else_e(p):
         p[0] = (str(p[1]+' '+p[2][0]+' '+p[3]+' '+p[4][0]+' '+p[5]+' '+p[6][0]), '('+p[2][1]+'->'+p[4][1]+')')
     else:
         p[0] = (str(p[1]+' '+p[2][0]+' '+p[3]+' '+p[4][0]+' '+p[5]+' '+p[6][0]), '('+p[2][1]+'->'+p[6][1]+')')
-
-def p_t_b(p):
-    'T : B'
-    p[0] = p[1]
-
-def p_t_n(p):
-    'T : N'
-    p[0] = p[1]
-
-def p_t_arrow(p):
-    'T : T ARROW T'
-    p[0] = (str(p[1][0]+' '+p[2]+' '+p[3][0]), '('+p[1][1]+'->'+p[3][1]+')')
 
 def p_b_iszero(p):
     'B : ISZERO LPAREN N RPAREN'
@@ -72,7 +45,6 @@ def p_error(p):
     print "Hubo un error en el parseo."
 
     parser.restart()
-
 
 # Build the parser
 parser = yacc.yacc(debug=True)
