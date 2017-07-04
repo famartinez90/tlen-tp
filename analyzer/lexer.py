@@ -12,11 +12,16 @@ tokens = [
     'PRED',
     'IF',
     'THEN',
-    'ELSE'
+    'ELSE',
+    'ARROW'
 ]
 
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
+
+def t_ARROW(t):
+    r'->'
+    return t
 
 def t_IF(t):
     r'(?i)if'
