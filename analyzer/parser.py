@@ -40,7 +40,10 @@ def p_n_succ(p):
 
 def p_n_pred(p):
     'N : PRED LPAREN N RPAREN'
-    p[0] = (str(p[1]+p[2]+p[3][0]+p[4]), 'Nat')
+    if p[3][0] == '0':
+        p[0] = ('0', 'Nat')
+    else:
+        p[0] = (str(p[1]+p[2]+p[3][0]+p[4]), 'Nat')
 
 def p_b_iszero(p):
     'B : ISZERO LPAREN N RPAREN'
