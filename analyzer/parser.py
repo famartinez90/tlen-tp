@@ -1,24 +1,24 @@
 import ply.yacc as yacc
 from .lexer import tokens
 
-def p_e_be(p):
+def p_e_c(p):
     'E : C'
     p[0] = p[1]
 
-def p_e_t(p):
-    'E : T'
+def p_e_b(p):
+    'E : B'
     p[0] = p[1]
 
-def p_be_c(p):
-    'BE : C'
+def p_e_n(p):
+    'E : N'
     p[0] = p[1]
 
-def p_be_t(p):
-    'BE : T'
-    p[0] = p[1]
+def p_f_asign(p):
+	'F : ASIGN'
+	p[0] = (str(p[1]), )
 
-def p_if_be_then_e_else_e(p):
-    'C : IF BE THEN E ELSE E'
+def p_if_e_then_e_else_e(p):
+    'C : IF E THEN E ELSE E'
     if p[4][1] != p[6][1]:
         print "Error: las dos opciones del if deben tener el mismo tipo"
     elif p[2]:
@@ -27,16 +27,20 @@ def p_if_be_then_e_else_e(p):
         p[0] = (str(p[1]+' '+p[2][0]+' '+p[3]+' '+p[4][0]+' '+p[5]+' '+p[6][0]), '('+p[2][1]+'->'+p[6][1]+')')
 
 def p_t_b(p):
-    'T : B'
-    p[0] = p[1]
+    'T : BOOL R'
+    p[0] = ('Bool', 'Bool')
 
 def p_t_n(p):
-    'T : N'
-    p[0] = p[1]
+    'T : NAT R'
+    p[0] = ('Nat', 'Nat')
 
 def p_t_arrow(p):
-    'T : T ARROW T'
-    p[0] = (str(p[1][0]+' '+p[2]+' '+p[3][0]), '('+p[1][1]+'->'+p[3][1]+')')
+    'R : ARROW T R'
+    p[0] = (str(p[1][0]+' '+p[2][0]+' '+p[3][0]), '')
+
+def p_r_lambda(p):
+    'R : '
+    p[0] = ('', '')
 
 def p_b_iszero(p):
     'B : ISZERO LPAREN N RPAREN'

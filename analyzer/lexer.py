@@ -13,11 +13,26 @@ tokens = [
     'IF',
     'THEN',
     'ELSE',
-    'ARROW'
+    'ARROW',
+    'BOOL',
+    'NAT',
+    'ASIGN'
 ]
 
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
+
+def t_ASIGN(t):
+	r'(?i)\\\[a-z]:.*\\.'
+	return t
+
+def t_BOOL(t):
+	r'(?i)bool'
+	return t
+
+def t_NAT(t):
+	r'(?i)nat'
+	return t
 
 def t_ARROW(t):
     r'->'
