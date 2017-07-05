@@ -5,7 +5,7 @@ import objetoParseado as op
 def p_if_be_then_e_else_e(p):
     'C : IF BE THEN E ELSE E'
     if p[4][1] != p[6][1]:
-        print "Error: las dos opciones del if deben tener el mismo tipo"
+        print ("Error: las dos opciones del if deben tener el mismo tipo")
     elif p[2]:
         p[0] = (str(p[1]+' '+p[2][0]+' '+p[3]+' '+p[4][0]+' '+p[5]+' '+p[6][0]), '('+p[2][1]+'->'+p[4][1]+')')
     else:
@@ -42,7 +42,7 @@ def p_n_nat(p):
     p[0] = (str(p[1]), 'Nat')
 
 def p_error(p):
-    print "Hubo un error en el parseo."
+    print ("Hubo un error en el parseo.")
 
     parser.restart()
 

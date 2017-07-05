@@ -64,7 +64,7 @@ def t_ISZERO(t):
 t_ignore = ' \t'
 
 def t_error(t):
-    print 'Illegal character '+str(t)
+    print ('Illegal character '+str(t))
     t.lexer.skip(1)
 
 # Build the lexer
