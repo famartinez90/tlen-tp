@@ -1,1 +1,2 @@
-\x:Nat.x
+\z:Nat.z
+\z:Nat.0

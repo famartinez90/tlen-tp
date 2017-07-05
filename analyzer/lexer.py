@@ -25,7 +25,7 @@ t_LPAREN = r'\('
 t_RPAREN = r'\)'
 
 def t_VARIABLE(t):
-    r'x'
+    r'([vwxyz])'
     return t
 
 def t_ARROW(t):
@@ -37,7 +37,7 @@ def t_LAMBDA(t):
     return t
 
 def t_TYPE(t):
-    r'Nat'
+    r'(Nat|Bool)'
     return t
 
 def t_DOT(t):

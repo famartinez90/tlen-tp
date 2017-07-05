@@ -9,7 +9,7 @@ if true then 0 else false
 true
 false
 isZero(0)
-isZero(succ(0))
+isZero(pred(succ(0)))
 succ(0)
 if true then 0 else 1
 if true then 0 else false

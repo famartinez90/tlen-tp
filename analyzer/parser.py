@@ -31,11 +31,11 @@ def p_if_exp_then_exp_else_exp(p):
 
 def p_exp_expression_lambda(p):
     'expression : lambda'
-    #print p[0]
+    p[0] = p[1]
 
 def p_exp_atomic_type(p):
-    'atomictype : TYPE'
-    #print p[0]
+    'atomictype : TYPE'    
+    p[0] = p[1]        
 
 def p_exp_type_arrow(p):
     'type : atomictype ARROW type'
@@ -43,20 +43,18 @@ def p_exp_type_arrow(p):
 
 def p_exp_type(p):
     'type : atomictype'
-    #print p[0]
+    p[0] = p[1]        
 
 def p_exp_variable(p):
-    'variable : VARIABLE'
-    print "slice"
-    print p.slice
-    print p.stack
-    print p.lexer
-    print p.parser
-    print "juancho"    
+    'variable : VARIABLE'   
+    p[0] = op.objetoParseado(p[1], None, None)    
 
 
 def p_exp_lambda(p):
-    'lambda : LAMBDA variable DOBLEDOT type DOT expression'    
+    'lambda : LAMBDA variable DOBLEDOT type DOT expression'            
+    p[0] = op.objetoParseado('\\%s:%s.%s' % (p[2].getExpresion(),p[4],p[6].getExpresion()), 
+        '%s->%s' % (p[4],p[4]),
+        None )
 
 def p_exp_iszero(p):
     'bool : ISZERO expression'
@@ -110,19 +108,16 @@ def p_exp_bool(p):
     p[0] = p[1]
 
 def p_exp_variable_expresion(p):
-    'expression : variable'
-    #print('variable expresion')
-    p[0] = p[2]
+    'expression : variable'    
+    p[0] = p[1]    
 
 def p_term_lparen_rparen(p):
     'expression : LPAREN expression RPAREN'
-    #print('p_term_lparen_rparen')
     p[0] = p[2]
     
 def p_error(p):
     print ("Hubo un error en el parseo.")
     print (p)
-
     parser.restart()
 
 # Build the parser
