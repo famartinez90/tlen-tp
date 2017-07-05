@@ -1,2 +1,2 @@
-\z:Nat.z
+\z:Bool.z
 \z:Nat.0

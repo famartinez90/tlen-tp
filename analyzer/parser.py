@@ -46,14 +46,19 @@ def p_exp_type(p):
     p[0] = p[1]        
 
 def p_exp_variable(p):
-    'variable : VARIABLE'   
-    p[0] = op.objetoParseado(p[1], None, None)    
+    'variable : VARIABLE'       
+    p[0] = op.objetoParseado(p[1], None, None, "%("+p[1]+")s" )        
 
 
 def p_exp_lambda(p):
-    'lambda : LAMBDA variable DOBLEDOT type DOT expression'            
+    'lambda : LAMBDA variable DOBLEDOT type DOT expression'                
+    if p[6].getTipo() is not None:
+        t = p[6].getTipo()
+    else:        
+        t = p[6].getTipoDinamico({p[2].getExpresion():p[4]})
+
     p[0] = op.objetoParseado('\\%s:%s.%s' % (p[2].getExpresion(),p[4],p[6].getExpresion()), 
-        '%s->%s' % (p[4],p[4]),
+        '%s->%s' % (p[4],t),
         None )
 
 def p_exp_iszero(p):
