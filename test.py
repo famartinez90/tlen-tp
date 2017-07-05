@@ -50,3 +50,5 @@ assert parse('if iszero(succ(0)) then 0 else if true then pred(succ(0)) else suc
 print 'Caso: if iszero(succ(0)) then 0 else if true then pred(succ(0)) else succ(0) OK!'
 assert parse('succ(if iszero(0) then succ(0) else 0)') == '2:Nat'
 print 'Caso: succ(if iszero(0) then succ(0) else 0) OK!'
+
+print '\nTesting finalizado, todos los casos correctos!\n'
