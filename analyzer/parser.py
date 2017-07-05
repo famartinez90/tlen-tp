@@ -26,9 +26,9 @@ def p_expression_false(p):
     'expression : FALSE'
     p[0] = op.objetoParseado("False", 'Bool', 'False')
 
-def p_n_succ(p):
-    'N : SUCC LPAREN N RPAREN'
-    p[0] = (str(p[1]+p[2]+p[3][0]+p[4]), 'Nat')
+def p_expression_succ(p):
+    'expression : SUCC LPAREN expression RPAREN'
+	p[0] = op.objetoParseado('succ('+p[3].getExpresion()')', 'succ('+p[3].getExpresion()')', 'Nat')
 
 def p_n_pred(p):
     'N : PRED LPAREN N RPAREN'
