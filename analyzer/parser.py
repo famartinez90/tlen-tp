@@ -28,6 +28,7 @@ def p_expression_false(p):
 
 def p_expression_succ(p):
     'expression : SUCC LPAREN expression RPAREN'
+	if(p[3].getTipo() != 'Nat') return "Error: succ espera un Nat como argumento"
 	p[0] = op.objetoParseado('succ('+p[3].getExpresion()')', 'succ('+p[3].getExpresion()')', 'Nat')
 
 def p_n_pred(p):
