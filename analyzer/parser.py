@@ -2,14 +2,30 @@ import ply.yacc as yacc
 from .lexer import tokens
 import objetoParseado as op
 
-# def p_if_be_then_e_else_e(p):
-#     'C : IF BE THEN E ELSE E'
-#     if p[4][1] != p[6][1]:
-#         print "Error: las dos opciones del if deben tener el mismo tipo"
-#     elif p[2]:
-#         p[0] = (str(p[1]+' '+p[2][0]+' '+p[3]+' '+p[4][0]+' '+p[5]+' '+p[6][0]), '('+p[2][1]+'->'+p[4][1]+')')
-#     else:
-#         p[0] = (str(p[1]+' '+p[2][0]+' '+p[3]+' '+p[4][0]+' '+p[5]+' '+p[6][0]), '('+p[2][1]+'->'+p[6][1]+')')
+def p_if_exp_then_exp_else_exp(p):
+    'expression : IF expression THEN expression ELSE expression'
+    if p[4].getTipo() != p[6].getTipo():
+        print "Error: las dos opciones del if deben tener el mismo tipo"
+    elif p[2].getTipo() != 'Bool':
+        print "Error: la guarda del if debe ser de tipo Bool"
+    elif p[2].getValor() == 'True':
+        p[0] = op.objetoParseado(
+            'if '+str(p[2].getExpresion())+' then '+str(p[4].getExpresion())+' else '+p[6].getExpresion(),
+            'Bool->'+p[4].getTipo(),
+            p[4].getValor()
+        )
+    elif p[2].getValor() == 'False':
+        p[0] = op.objetoParseado(
+            'if '+str(p[2].getExpresion())+' then '+str(p[4].getExpresion())+' else '+p[6].getExpresion(),
+            'Bool->'+p[6].getTipo(),
+            p[6].getValor()
+        )
+    else:
+        p[0] = op.objetoParseado(
+            'if '+str(p[2].getExpresion())+' then '+str(p[4].getExpresion())+' else '+p[6].getExpresion(),
+            'Bool->'+p[4].getTipo(),
+            'if '+str(p[2].getExpresion())+' then '+str(p[4].getExpresion())+' else '+p[6].getExpresion()
+        )
 
 def p_exp_iszero(p):
     'expression : ISZERO LPAREN expression RPAREN'
@@ -39,7 +55,7 @@ def p_exp_pred_succ(p):
 
 def p_exp_pred(p):
     'expression : PRED LPAREN ZERO RPAREN'
-    p[0] = op.objetoParseado('pred('+str(p[3])+')', 'Nat', 0)
+    p[0] = op.objetoParseado('pred('+str(p[3])+')', 'Nat', '0')
 
 def p_exp_zero(p):
     'expression : ZERO'
