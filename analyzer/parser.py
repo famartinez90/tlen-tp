@@ -12,19 +12,19 @@ import objetoParseado as op
 #         p[0] = (str(p[1]+' '+p[2][0]+' '+p[3]+' '+p[4][0]+' '+p[5]+' '+p[6][0]), '('+p[2][1]+'->'+p[6][1]+')')
 
 def p_b_iszero(p):
-    'B : ISZERO LPAREN N RPAREN'
-    if p[3][1] != 'Nat':
+    'expression : ISZERO LPAREN N RPAREN'
+    if p[3].getTipo() != 'Nat':
         return "Error: isZero espera un Nat"
     else:
-        p[0] = (str(p[1]+p[2]+p[3][0]+p[4]), 'Bool')
+        p[0] = op.objetoParseado('isZero('+p[3].expresion+')', 'Bool', str(p[3].valor == 0))
 
 def p_expression_true(p):
-    'B : TRUE'
-    p[0] = op.objetoParseado("TRUE", 'Bool', 'TRUE')
+    'expression : TRUE'
+    p[0] = op.objetoParseado("True", 'Bool', 'True')
 
 def p_expression_false(p):
-    'B : FALSE'
-    p[0] = op.objetoParseado("FALSE", 'Bool', 'FALSE')
+    'expression : FALSE'
+    p[0] = op.objetoParseado("False", 'Bool', 'False')
 
 def p_n_succ(p):
     'N : SUCC LPAREN N RPAREN'
@@ -39,7 +39,7 @@ def p_n_pred(p):
 
 def p_n_nat(p):
     'N : ZERO'
-    p[0] = (str(p[1]), 'Nat')
+    p[0] = op.objetoParseado('0', 'Nat', 0)
 
 def p_error(p):
     print "Hubo un error en el parseo."
