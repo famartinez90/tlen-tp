@@ -16,7 +16,7 @@ def p_b_iszero(p):
     if p[3].getTipo() != 'Nat':
         return "Error: isZero espera un Nat"
     else:
-        p[0] = op.objetoParseado('isZero('+p[3].expresion+')', 'Bool', str(p[3].valor == 0))
+        p[0] = op.objetoParseado('isZero('+p[3].getExpresion()+')', 'Bool', str(p[3].getValor() == 0))
 
 def p_expression_true(p):
     'expression : TRUE'
@@ -33,10 +33,11 @@ def p_expression_succ(p):
 
 def p_n_pred(p):
     'N : PRED LPAREN N RPAREN'
-    if p[3][0] == '0':
-        p[0] = ('0', 'Nat')
-    else:
-        p[0] = (str(p[1]+p[2]+p[3][0]+p[4]), 'Nat')
+    valor = p[3].getValor()
+    if valor == 0:
+        valor = 0
+
+    p[0] = ('pred('+p[3].getExpresion()+')', 'Nat', valor)
 
 def p_n_nat(p):
     'N : ZERO'
