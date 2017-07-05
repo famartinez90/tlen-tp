@@ -13,8 +13,10 @@ tokens = [
     'IF',
     'THEN',
     'ELSE',
-    'ARROW',
-	'BOOL'
+    'ARROW'
+    # 'LAMBDA',
+    # 'TYPE',
+    # 'DOT'
 ]
 
 t_LPAREN = r'\('
@@ -24,6 +26,18 @@ def t_ARROW(t):
     r'->'
     return t
 
+# def t_LAMBDA(t):
+    # r'(?i)\\x:'
+    # return t
+
+# def t_TYPE(t):
+    # r'Nat|Bool'
+    # return t
+
+# def t_DOT(t):
+    # r'\.'
+    # return t
+      
 def t_IF(t):
     r'(?i)if'
     return t
@@ -72,5 +86,7 @@ lexer = lex.lex()
 
 def apply_lexer(string):
     lexer.input(string)
+    print("LEXER OUT")
+    print(list(lexer))
 
     return list(lexer)
