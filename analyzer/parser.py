@@ -12,7 +12,7 @@ import objetoParseado as op
 #         p[0] = (str(p[1]+' '+p[2][0]+' '+p[3]+' '+p[4][0]+' '+p[5]+' '+p[6][0]), '('+p[2][1]+'->'+p[6][1]+')')
 
 def p_b_iszero(p):
-    'expression : ISZERO LPAREN N RPAREN'
+    'expression : ISZERO LPAREN expression RPAREN'
     if p[3].getTipo() != 'Nat':
         return "Error: isZero espera un Nat"
     else:
@@ -27,22 +27,26 @@ def p_expression_false(p):
     p[0] = op.objetoParseado("False", 'Bool', 'False')
 
 def p_expression_succ(p):
-    'expression : SUCC LPAREN N RPAREN'
+    'expression : SUCC LPAREN expression RPAREN'
     if p[3].getTipo() != 'Nat':
         return "Error: succ espera un Nat como argumento"
     
     p[0] = op.objetoParseado('succ('+str(p[3].getExpresion())+')', 'Nat', 'succ('+str(p[3].getValor())+')')
 
-def p_n_pred(p):
-    'N : PRED LPAREN N RPAREN'
-    valor = p[3].getValor()
-    if valor == 0:
+def p_exp_pred(p):
+    'expression : PRED LPAREN expression RPAREN'
+    valor = 'pred('+str(p[3].getValor())+')'
+    if p[3].getValor() == 0:
         valor = 0
 
-    p[0] = ('pred('+p[3].getExpresion()+')', 'Nat', valor)
+    p[0] = op.objetoParseado('pred('+str(p[3].getExpresion())+')', 'Nat', valor)
 
-def p_n_nat(p):
-    'N : ZERO'
+def p_exp_pred_succ(p):
+    'expression : PRED LPAREN SUCC LPAREN expression RPAREN RPAREN'
+    p[0] = op.objetoParseado(str(p[5].getExpresion()), 'Nat', p[5].getValor())
+
+def p_exp_zero(p):
+    'expression : ZERO'
     p[0] = op.objetoParseado('0', 'Nat', 0)
 
 def p_error(p):
@@ -57,4 +61,4 @@ def apply_parser(string):
     parseado = parser.parse(string)
 
     if parseado is not None:
-        return parseado.getExpresion()+':'+parseado.getTipo()
+        return str(parseado.getValor())+':'+parseado.getTipo()
