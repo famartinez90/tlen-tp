@@ -38,8 +38,7 @@ def p_exp_atomic_type(p):
     p[0] = p[1]        
 
 def p_exp_type_arrow(p):
-    'type : atomictype ARROW type'
-    #print p[0]
+    'type : atomictype ARROW type'    
 
 def p_exp_type(p):
     'type : atomictype'
@@ -50,16 +49,16 @@ def p_exp_variable(p):
     p[0] = op.objetoParseado(p[1], None, None, "%("+p[1]+")s" )        
 
 
-def p_exp_lambda(p):
-    'lambda : LAMBDA variable DOBLEDOT type DOT expression'                
+def p_exp_lambda(p):    
+    'lambda : LAMBDA variable DOBLEDOT type DOT expression'                    
     if p[6].getTipo() is not None:
         t = p[6].getTipo()
     else:        
         t = p[6].getTipoDinamico({p[2].getExpresion():p[4]})
 
-    p[0] = op.objetoParseado('\\%s:%s.%s' % (p[2].getExpresion(),p[4],p[6].getExpresion()), 
-        '%s->%s' % (p[4],t),
-        None )
+    o = op.objetoParseado('\\%s:%s.%s' % (p[2].getExpresion(),p[4],p[6].getExpresion()), '%s->%s' % (p[4],t),None)    
+    # o.pushVariable(p[2].getExpresion())
+    p[0] = o
 
 def p_exp_iszero(p):
     'bool : ISZERO expression'
@@ -77,24 +76,25 @@ def p_exp_false(p):
     p[0] = op.objetoParseado("False", 'Bool', 'False')
 
 def p_exp_succ(p):
-    'nat : SUCC expression'
-    #print('p_exp_succ')
-    if p[2].getTipo() != 'Nat':
-        return "Error: succ espera un Nat como argumento"
-    
-    p[0] = op.objetoParseado('succ('+str(p[2].getExpresion())+')', 'Nat', p[2].getValor()+1)
+    'nat : SUCC expression'    
+    # if p[2].getTipo() != 'Nat':
+    #     return "Error: succ espera un Nat como argumento"
+    # print p[2]
+    v = 0
+    if p[2].getValor() is not None:
+        v = p[2].getValor()+1
+    p[0] = op.objetoParseado('succ('+str(p[2].getExpresion())+')', 'Nat', v)    
+    # print('p_exp_succ')
 
 def p_exp_pred(p):
     'nat : PRED expression'
-    #print('p_exp_pred')
+
     newValue = max(0, p[2].getValor()-1)
-    newExpression = ''
-    for i in range(newValue):
-        newExpression +='succ('
-    newExpression +='0'
-    for i in range(newValue):
-        newExpression +=')'
+    #newValue = 1
+    
+    newExpression = 'pred(%s)' % p[2].getExpresion()
     p[0] = op.objetoParseado(newExpression, 'Nat', newValue)
+
 
 def p_exp_zero(p):
     'nat : ZERO'
@@ -111,6 +111,20 @@ def p_exp_bool(p):
     'expression : bool'
     #print('p_exp_bool')
     p[0] = p[1]
+
+def p_exp_apply(p):
+    'expression : lambda expression'
+    print('p_exp_lambda_expresion')
+    # p[0] = p[1]
+    # v = p[2].getValor() 
+    # print v
+    # if v is not None:        
+    #     varName =  p[1].popVariable()
+    #     print varName        
+    #     print p[1].getValorDinamico( { varName: v } )
+    #print p[2].getValorDinamico()
+    print('p_exp_lambda_expresion')
+
 
 def p_exp_variable_expresion(p):
     'expression : variable'    
