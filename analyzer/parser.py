@@ -38,7 +38,9 @@ def p_exp_atomic_type(p):
     p[0] = p[1]        
 
 def p_exp_type_arrow(p):
-    'type : atomictype ARROW type'    
+    'type : atomictype ARROW type'
+    #print p[0]
+    p[0] = '('+p[1]+p[2]+p[3]+')'
 
 def p_exp_type(p):
     'type : atomictype'
