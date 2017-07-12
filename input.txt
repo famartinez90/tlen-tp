@@ -1,20 +1,13 @@
-\z:Nat.0
-\z:Nat.isZero(succ(succ(pred(succ(z)))))
-0
-true
-false
-isZero(0)
-isZero(succ(0))
-succ(0)
-succ(succ(succ(succ(0))))
-if true then 0 else succ(pred(0))
-if true then 0 else false
-true
-false
-isZero(0)
-isZero(pred(succ(0)))
-succ(0)
-if true then 0 else false
-\x:Nat.x
-\x:Nat.x
-\z:Nat.z
+\z:Nat.z 0
+\z:Nat.succ(z) 0
+\z:Nat.succ(succ(z)) 0
+\z:Nat.pred(succ(succ(z))) 0
+\z:Nat.z  true
+\z:Nat.z  false
+\z:Nat.iszero(z) 0
+\z:Nat.iszero(succ(z)) 0
+\z:Nat.if z then 0 else succ(0) false
+\z:Nat.if z then 0 else succ(0) true
+\z:Nat.if z then 0 else succ(0) iszero(0)
+\z:Nat.if z then 0 else succ(0) iszero(succ(0))
+\z:Nat.if iszero(z) then succ(0) else succ(z) succ(pred(succ(0)))

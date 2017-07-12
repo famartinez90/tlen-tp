@@ -1,17 +1,19 @@
+\z:Nat.0
+\z:Nat.isZero(succ(succ(pred(succ(z)))))
 0
 true
 false
 isZero(0)
 isZero(succ(0))
 succ(0)
-if true then 0 else 1
+succ(succ(succ(succ(0))))
+if true then 0 else succ(pred(0))
 if true then 0 else false
 true
 false
 isZero(0)
 isZero(pred(succ(0)))
 succ(0)
-if true then 0 else 1
 if true then 0 else false
 \x:Nat.x
 \x:Nat.x
