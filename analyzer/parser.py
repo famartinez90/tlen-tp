@@ -33,8 +33,8 @@ def p_exp_lambda(p):
     p[0] = op.construirLambda(p[2],p[4],p[6])
 
 def p_exp_iszero(p):
-    'bool : ISZERO expression'    
-    p[0] = op.construirIsZero(p[2])
+    'bool : ISZERO LPAREN expression RPAREN'    
+    p[0] = op.construirIsZero(p[3])
 
 def p_exp_true(p):
     'bool : TRUE'
@@ -45,12 +45,12 @@ def p_exp_false(p):
     p[0] = op.construirBool(False)
 
 def p_exp_succ(p):
-    'nat : SUCC expression'    
-    p[0] = op.construirSucc(p[2])
+    'nat : SUCC LPAREN expression RPAREN'    
+    p[0] = op.construirSucc(p[3])
 
 def p_exp_pred(p):
-    'nat : PRED expression'
-    p[0] = op.construirPred(p[2])
+    'nat : PRED LPAREN expression RPAREN'
+    p[0] = op.construirPred(p[3])
 
 
 def p_exp_zero(p):
@@ -78,9 +78,9 @@ def p_exp_variable_expresion(p):
     'expression : variable'    
     p[0] = p[1]    
 
-def p_term_lparen_rparen(p):
-    'expression : LPAREN expression RPAREN'
-    p[0] = p[2]
+# def p_term_lparen_rparen(p):
+#     'expression : LPAREN expression RPAREN'
+#     p[0] = p[2]
     
 def p_error(p):
     print ("Hubo un error en el parseo.")
