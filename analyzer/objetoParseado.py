@@ -199,7 +199,11 @@ class EPred(objetoParseado):
 
     def getValor(self,scope={}):
         if (self.hijo.getValor(scope).getTipo() == 'Nat'):
-            return EValor('Nat',self.hijo.getValor(scope).getValor()-1 )
+            if self.hijo.getValor(scope).getValor() > 0:
+                return EValor('Nat', self.hijo.getValor(scope).getValor()-1)
+            else:
+                return EValor('Nat', self.hijo.getValor(scope).getValor())
+
         return EValor('Indefinido',None )
 
 
