@@ -67,12 +67,12 @@ def p_exp_bool(p):
     p[0] = p[1]
 
 def p_exp_apply(p):
-    'expression : lambda expression'
+    'expression : LPAREN lambda RPAREN expression'
     #print 'p_exp_lambda_expresion' 
     # 1. evaluar si p[1] acepta tipo de p[2]
     # 2. resolver tipos en p[1] en base a la aplicacion de p[2]
     # 3. tratar de resolver un valor en base  a la aplicacion.    
-    p[0] = op.construirAplicacion(p[1] , p[2])
+    p[0] = op.construirAplicacion(p[2] , p[4])
 
 def p_exp_variable_expresion(p):
     'expression : variable'    
