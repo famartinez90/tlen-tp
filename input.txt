@@ -1,2 +1,3 @@
+\x:Nat->Nat.\y:Nat.(\z:Bool.if z then x y else 0)
 (\x:Nat->Nat.\y:Nat. (\z:Bool.if z then x y else 0)) (\j:Nat.succ(j)) succ(0) true
 (\x:Nat->Nat.x ) (\j:Nat.succ(j)) 
