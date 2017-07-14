@@ -1,13 +1,2 @@
-\z:Nat.z 0
-\z:Nat.succ(z) 0
-\z:Nat.succ(succ(z)) 0
-\z:Nat.pred(succ(succ(z))) 0
-\z:Nat.z  true
-\z:Nat.z  false
-\z:Nat.iszero(z) 0
-\z:Nat.iszero(succ(z)) 0
-\z:Nat.if z then 0 else succ(0) false
-\z:Nat.if z then 0 else succ(0) true
-\z:Nat.if z then 0 else succ(0) iszero(0)
-\z:Nat.if z then 0 else succ(0) iszero(succ(0))
-\z:Nat.if iszero(z) then succ(0) else succ(z) succ(pred(succ(0)))
+(\x:Nat->Nat.\y:Nat. (\z:Bool.if z then x y else 0)) (\j:Nat.succ(j)) succ(0) true
+(\x:Nat->Nat.x ) (\j:Nat.succ(j)) 

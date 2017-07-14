@@ -84,4 +84,9 @@ print parse('(\\x:Bool.(\\z:Nat.if x then z else succ(z))) 0 true')
 assert parse('(\\x:Bool.(\\z:Nat.if x then z else succ(z))) 0 true') == '0:Nat'
 print 'Caso: (\\x:Bool.(\\z:Nat.if x then z else succ(z))) 0 true OK!'
 
+print parse('(\\z:Nat.iszero((\\x:Nat. pred(x)) z)) succ(0)')
+assert parse('(\\z:Nat.iszero((\\x:Nat. pred(x)) z)) succ(0)') == 'true:Bool'
+
+
+
 print '\nTesting finalizado, todos los casos correctos!\n'

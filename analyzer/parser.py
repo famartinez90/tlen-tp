@@ -10,6 +10,8 @@ def p_if_exp_then_exp_else_exp(p):
 
 def p_exp_expression_lambda(p):
     'expression : lambda'
+    # print "en lambda"
+    # print p[1]
     p[0] = p[1]
 
 def p_exp_atomic_type(p):
@@ -26,10 +28,13 @@ def p_exp_type(p):
 
 def p_exp_variable(p):
     'variable : VARIABLE'       
+    # print 'contruyo variable' 
+    # print p[1]
     p[0] = op.construirVariable(p[1])        
 
 def p_exp_lambda(p):    
     'lambda : LAMBDA variable DOBLEDOT type DOT expression'
+    # print "contruyo lambda"
     p[0] = op.construirLambda(p[2],p[4],p[6])
 
 def p_exp_iszero(p):
@@ -66,25 +71,42 @@ def p_exp_bool(p):
     'expression : bool'    
     p[0] = p[1]
 
-def p_exp_apply(p):
+# def p_exp_apply(p):
+#     'expression : lambda expression'
+#     #'expression : LPAREN lambda RPAREN expression'
+#     #print 'p_exp_lambda_expresion' 
+#     # 1. evaluar si p[1] acepta tipo de p[2]
+#     # 2. resolver tipos en p[1] en base a la aplicacion de p[2]
+#     # 3. tratar de resolver un valor en base  a la aplicacion.    
+#     p[0] = op.construirAplicacion(p[1] , p[2])
+#     #p[0] = op.construirAplicacion(p[2] , p[4])
+
+
+def p_exp_apply(p):    
     'expression : LPAREN lambda RPAREN expression'
-    #print 'p_exp_lambda_expresion' 
-    # 1. evaluar si p[1] acepta tipo de p[2]
-    # 2. resolver tipos en p[1] en base a la aplicacion de p[2]
-    # 3. tratar de resolver un valor en base  a la aplicacion.    
+    # print "contruyo alla"
     p[0] = op.construirAplicacion(p[2] , p[4])
+
+def p_exp_apply_2(p):
+    'expression : expression expression'
+    # print "contruyo aca"
+    # print p[1]
+    p[0] = op.construirAplicacion(p[1] , p[2])
+
+
+
 
 def p_exp_variable_expresion(p):
     'expression : variable'    
     p[0] = p[1]    
 
-# def p_term_lparen_rparen(p):
-#     'expression : LPAREN expression RPAREN'
-#     p[0] = p[2]
+def p_term_lparen_rparen(p):
+    'expression : LPAREN expression RPAREN'
+    p[0] = p[2]
     
 def p_error(p):
-    print ("Hubo un error en el parseo.")
-    print (p)
+    # print ("Hubo un error en el parseo.")
+    # print (p)
     parser.restart()
 
 # Build the parser

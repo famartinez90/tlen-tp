@@ -36,6 +36,7 @@ def construirAplicacion(lamb, param):
     # 1. evaluar si p[1] acepta tipo de p[2]
     # 2. resolver tipos en p[1] en base a la aplicacion de p[2]
     # 3. tratar de resolver un valor en base  a la aplicacion.
+    #print lamb
     return EAplicacion(lamb,param)
 
 
@@ -101,9 +102,12 @@ class EAplicacion(objetoParseado):
 
     def __init__(self,lamb,param):
         self.lamb = lamb
+        # print lamb
         self.param = param
 
     def printTipo(self):
+        # print "tiipo"
+        # print self.getValor()
         # print self.param.getValor()
         # print  self.lamb.getValor(self.param.getValor())
         if self.getValor().getTipo() != 'Indefinido':        
@@ -111,14 +115,18 @@ class EAplicacion(objetoParseado):
         return 'ERROR'
 
     def printExpresion(self):
+        #print "print valor de expresion %s" % self.getValor().getTipo()
         if self.getValor().getTipo() != 'Indefinido':        
-            return self.lamb.getValor(self.param.getValor({})).printValor()
-
-        return  '%s %s' % (self.lamb.printExpresion(),self.param.printExpresion())
-        return 'a'
+            #print "imprimo el valor %s" % self.getValor()
+            return self.getValor().printValor()
+        return  '%s %s' % (self.lamb.printExpresion(),self.param.printExpresion())        
 
     def getValor(self,scope={}):
-        return self.lamb.getValor(self.param.getValor(scope))
+        # print 'get valor aplicacion'
+        s = {'_':self.param.getValor(scope)}
+        # print s
+        # print self.lamb
+        return self.lamb.getValor(s)
 
 
 class EVariable(objetoParseado):
@@ -139,13 +147,15 @@ class EVariable(objetoParseado):
 
 class ELambda(objetoParseado):    
     def __init__(self,var, tipo,expr):
+        # print "contrui una lambda con %s %s %s" % (var, tipo, expr)
         self.var = var
         self.tipo = tipo
         self.expr = expr
 
-    def getValor(self,param=None,scope={}):        
-        if param is not None:            
-            # print self.expr
+    def getValor(self,scope={}):        
+        # print "get valor ELambda"        
+        if scope.has_key('_'):            
+            param = scope['_']            
             if self.expr.getValor({ self.var.printExpresion():  param}).getTipo() != 'Indefinido':                            
                 return self.expr.getValor({ self.var.printExpresion():  param})
         return EValor('Indefinido',None )
@@ -177,10 +187,15 @@ class ESucc(objetoParseado):
         return 'Nat'
 
     def printExpresion(self):
+        print "en print expresion"
+        print self.getValor().getTipo()
+        if self.getValor().getTipo() == 'Nat':
+            return self.getValor().printValor()        
         return 'succ(%s)' % self.hijo.printExpresion()
 
-    def getValor(self,scope={}):         
+    def getValor(self,scope={}):                 
         if (self.hijo.getValor(scope).getTipo() == 'Nat'):
+            #print "pido el valor del hijo %s "  % self.hijo.getValor(scope).getValor()            
             return EValor('Nat',self.hijo.getValor(scope).getValor()+1 )
         return EValor('Indefinido',None )
 
@@ -270,7 +285,7 @@ class EValor(object):
     def printNat(self):
         num = '0'
         for i in range(max(0,int(self.valor))):
-            num  = 'succ(%s)' % num
+            num  = 'succ(%s)' % num        
         return '%s' % num
 
     def printIndefinido(self):

@@ -25,7 +25,7 @@ t_LPAREN = r'\('
 t_RPAREN = r'\)'
 
 def t_VARIABLE(t):
-    r'([vwxyz])'
+    r'([jvwxyz])'
     return t
 
 def t_ARROW(t):
@@ -91,6 +91,11 @@ def t_error(t):
     print ('Illegal character '+str(t))
     t.lexer.skip(1)
 
+
+precedence = (
+    ('left', 'PLUS', 'MINUS'),
+    ('left', 'TIMES', 'DIVIDE'),
+)
 # Build the lexer
 lexer = lex.lex()
 
