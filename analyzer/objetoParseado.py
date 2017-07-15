@@ -5,6 +5,7 @@ class objetoParseado(object):
         self.expresion = expresion
         self.tipo = [tipo]                
         self.valor = valor
+        self.bindedVariables = {}
 
     def getExpresion(self):
         return self.expresion
@@ -25,9 +26,9 @@ class objetoParseado(object):
     def getValor(self):
         return self.valor
 
+    def bind(self,var,expression):
+        self.bindedVariables[var]  = expression
 
-def construirLambda():
-    return LAMBDA()
 
 def construirBool(valor):
     return EBool(valor)
@@ -106,7 +107,7 @@ class EAplicacion(objetoParseado):
         self.param = param
 
     def printTipo(self):
-        # print "tiipo"
+        #print "tiipo"
         # print self.getValor()
         # print self.param.getValor()
         # print  self.lamb.getValor(self.param.getValor())
@@ -122,7 +123,7 @@ class EAplicacion(objetoParseado):
         return  '%s %s' % (self.lamb.printExpresion(),self.param.printExpresion())        
 
     def getValor(self,scope={}):
-        # print 'get valor aplicacion'
+        #print 'get valor aplicacion'
         s = {'_':self.param.getValor(scope)}
         # print s
         # print self.lamb
@@ -147,19 +148,24 @@ class EVariable(objetoParseado):
 
 class ELambda(objetoParseado):    
     def __init__(self,var, tipo,expr):
-        # print "contrui una lambda con %s %s %s" % (var, tipo, expr)
+        print "contrui una lambda con %s %s %s" % (var.var, tipo, expr)
+        self.bindedVariables = {}
         self.var = var
         self.tipo = tipo
         self.expr = expr
 
     def getValor(self,scope={}):        
-        # print "get valor ELambda"        
+        self.bindedVariables.update(scope)      
         if scope.has_key('_'):            
             param = scope['_']            
-            if self.expr.getValor({ self.var.printExpresion():  param}).getTipo() != 'Indefinido':                            
-                return self.expr.getValor({ self.var.printExpresion():  param})
-        return EValor('Indefinido',None )
-
+            self.bindedVariables.update({ self.var.printExpresion():  param})
+            if self.expr.getValor(self.bindedVariables).getTipo() != 'Indefinido':                                            
+                return self.expr.getValor(self.bindedVariables)            
+            
+            return EValor('Lambda',self.expr.bind(self.bindedVariables) )
+        return EValor('Lambda',self.expr )    
+        
+        
     def printTipo(self):
         return '%s -> %s' % (self.tipo, self.expr.printTipo())
 
@@ -187,8 +193,8 @@ class ESucc(objetoParseado):
         return 'Nat'
 
     def printExpresion(self):
-        print "en print expresion"
-        print self.getValor().getTipo()
+        # print "en print expresion"
+        # print self.getValor().getTipo()
         if self.getValor().getTipo() == 'Nat':
             return self.getValor().printValor()        
         return 'succ(%s)' % self.hijo.printExpresion()
@@ -276,6 +282,9 @@ class EValor(object):
             return self.printNat()
         elif self.tipo == 'Bool':
             return self.printBool()
+        elif self.tipo == 'Lambda':
+            return self.printBool()
+
         else:
             return self.printIndefinido()
 
@@ -288,9 +297,17 @@ class EValor(object):
             num  = 'succ(%s)' % num        
         return '%s' % num
 
+    def printLambda(self):
+        print "estras son binded"
+        print self.bindedVariables
+        return 'Lambda'
+
     def printIndefinido(self):
         return 'Indefinido'
 
     def __str__(self):
+        return 'DEBUG: %s : %s ' % (self.tipo,self.valor)
+
+    def __repr__(self):
         return 'DEBUG: %s : %s ' % (self.tipo,self.valor)
 

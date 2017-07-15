@@ -51,37 +51,49 @@ print 'Caso: succ(if iszero(0) then succ(0) else 0) OK!'
 
 print '\nTesteando lambdas con aplicacion:\n'
 
-assert parse('(\\z:Nat.z) 0') == '0:Nat'
-print 'Caso: (\\z:Nat.z) 0 OK!'
-assert parse('(\\z:Nat.succ(z)) 0') == 'succ(0):Nat'
-print 'Caso: (\\z:Nat.succ(z)) 0 OK!'
-assert parse('(\\z:Nat.succ(succ(z))) 0') == 'succ(succ(0)):Nat'
-print 'Caso: (\\z:Nat.succ(succ(z))) 0 OK!'
-assert parse('(\\z:Nat.pred(succ(succ(z)))) 0') == 'succ(0):Nat'
-print 'Caso: (\\z:Nat.pred(succ(succ(z)))) 0 OK!'
-assert parse('(\\z:Nat.z)  true') == 'true:Bool'
-print 'Caso: (\\z:Nat.z)  true OK!'
-assert parse('(\\z:Nat.z)  false') == 'false:Bool'
-print 'Caso: (\\z:Nat.z)  false OK!'
-assert parse('(\\z:Nat.iszero(z)) 0') == 'true:Bool'
-print 'Caso: (\\z:Nat.iszero(z)) 0 OK!'
-assert parse('(\\z:Nat.iszero(succ(z))) 0') == 'false:Bool'
-print 'Caso: (\\z:Nat.iszero(succ(z))) 0 OK!'
-assert parse('(\\z:Nat.if z then 0 else succ(0)) false') == 'succ(0):Nat'
-print 'Caso: (\\z:Nat.if z then 0 else succ(0)) false OK!'
-assert parse('(\\z:Nat.if z then 0 else succ(0)) true') == '0:Nat'
-print 'Caso: (\\z:Nat.if z then 0 else succ(0)) true OK!'
-assert parse('(\\z:Nat.if z then 0 else succ(0)) iszero(0)') == '0:Nat'
-print 'Caso: (\\z:Nat.if z then 0 else succ(0)) iszero(0) OK!'
-assert parse('(\\z:Nat.if z then 0 else succ(0)) iszero(succ(0))') == 'succ(0):Nat'
-print 'Caso: (\\z:Nat.if z then 0 else succ(0)) iszero(succ(0)) OK!'
-assert parse('(\\z:Nat.if iszero(z) then succ(0) else succ(z)) succ(pred(succ(0)))') == 'succ(succ(0)):Nat'
-print 'Caso: (\\z:Nat.if iszero(z) then succ(0) else succ(z)) succ(pred(succ(0))) OK!'
+assert parse('\\z:Nat.z 0') == '0:Nat'
+print 'Caso: \\z:Nat.z 0 OK!'
+
+assert parse('\\z:Nat.succ(z) 0') == 'succ(0):Nat'
+print 'Caso: \\z:Nat.succ(z) 0 OK!'
+
+assert parse('\\z:Nat.succ(succ(z)) 0') == 'succ(succ(0)):Nat'
+print 'Caso: \\z:Nat.succ(succ(z)) 0 OK!'
+
+assert parse('\\z:Nat.pred(succ(succ(z))) 0') == 'succ(0):Nat'
+print 'Caso: \\z:Nat.pred(succ(succ(z))) 0 OK!'
+
+assert parse('\\z:Nat.z  true') == 'true:Bool'
+print 'Caso: \\z:Nat.z  true OK!'
+
+assert parse('\\z:Nat.z  false') == 'false:Bool'
+print 'Caso: \\z:Nat.z  false OK!'
+
+assert parse('\\z:Nat.iszero(z) 0') == 'true:Bool'
+print 'Caso: \\z:Nat.iszero(z) 0 OK!'
+
+assert parse('\\z:Nat.iszero(succ(z)) 0') == 'false:Bool'
+print 'Caso: \\z:Nat.iszero(succ(z)) 0 OK!'
+
+assert parse('\\z:Nat.if z then 0 else succ(0) false') == 'succ(0):Nat'
+print 'Caso: \\z:Nat.if z then 0 else succ(0) false OK!'
+
+assert parse('\\z:Nat.if z then 0 else succ(0) true') == '0:Nat'
+print 'Caso: \\z:Nat.if z then 0 else succ(0) true OK!'
+
+assert parse('\\z:Nat.if z then 0 else succ(0) iszero(0)') == '0:Nat'
+print 'Caso: \\z:Nat.if z then 0 else succ(0) iszero(0) OK!'
+
+assert parse('\\z:Nat.if z then 0 else succ(0) iszero(succ(0))') == 'succ(0):Nat'
+print 'Caso: \\z:Nat.if z then 0 else succ(0) iszero(succ(0)) OK!'
+
+assert parse('\\z:Nat.if iszero(z) then succ(0) else succ(z) succ(pred(succ(0)))') == 'succ(succ(0)):Nat'
+print 'Caso: \\z:Nat.if iszero(z) then succ(0) else succ(z) succ(pred(succ(0))) OK!'
 
 print '\nTesteando lambdas con aplicacion complejos:\n'
 
-print parse('(\\x:Bool.(\\z:Nat.if x then z else succ(z))) 0 true')
-assert parse('(\\x:Bool.(\\z:Nat.if x then z else succ(z))) 0 true') == '0:Nat'
+
+assert parse('\\x:Bool.(\\z:Nat.if x then z else succ(z)) 0 true') == '0:Nat'
 print 'Caso: (\\x:Bool.(\\z:Nat.if x then z else succ(z))) 0 true OK!'
 
 print parse('(\\z:Nat.iszero((\\x:Nat. pred(x)) z)) succ(0)')

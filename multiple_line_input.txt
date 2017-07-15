@@ -35,3 +35,8 @@ if true then 0 else false
 (\x:Bool.(\z:Nat.if x then z else succ(z))) 0 true
 \x:Nat->Nat. \y:Nat. (\z:Bool. if z then x y else 0)
 (\x:Bool.(\z:Nat.if x then z else succ(z))) 0 true
+
+
+\x:Nat->Nat.\y:Nat.(\z:Bool.if z then x y else 0)
+(\x:Nat->Nat.\y:Nat. (\z:Bool.if z then x y else 0)) (\j:Nat.succ(j)) succ(0) true
+(\x:Nat->Nat.x ) (\j:Nat.succ(j)) 
