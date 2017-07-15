@@ -70,7 +70,7 @@ class EIfThenElse(objetoParseado):
         self.exprElse = exprElse
 
     def getValor(self,scope={}):
-        # TODO: chequear q la condicion sea bool         
+        # TODO: chequear q la condicion sea bool
         if self.cond.getValor(scope).getValor():
             if  self.exprIf.getValor(scope).getTipo() != 'Indefinido':
                 return self.exprIf.getValor(scope)
@@ -105,6 +105,9 @@ class EAplicacion(objetoParseado):
         # print lamb
         self.param = param
 
+    def setParam(self, param):
+        self.param = param
+
     def printTipo(self):
         # print "tiipo"
         # print self.getValor()
@@ -117,13 +120,23 @@ class EAplicacion(objetoParseado):
     def printExpresion(self):
         #print "print valor de expresion %s" % self.getValor().getTipo()
         if self.getValor().getTipo() != 'Indefinido':        
-            #print "imprimo el valor %s" % self.getValor()
+            # print "imprimo el valor %s" % self.getValor()
             return self.getValor().printValor()
-        return  '%s %s' % (self.lamb.printExpresion(),self.param.printExpresion())        
+
+        return  '%s %s' % (self.lamb.printExpresion(),'')        
 
     def getValor(self,scope={}):
         # print 'get valor aplicacion'
-        s = {'_':self.param.getValor(scope)}
+
+        if len(self.param) == 0 and len(scope) == 0:
+            return EValor('Indefinido',None )
+
+        s = {
+            '_':self.param[0].getValor(scope),
+            'param': self.param[1:],
+            'scopeAcum': scope
+        }
+
         # print s
         # print self.lamb
         return self.lamb.getValor(s)
@@ -139,8 +152,8 @@ class EVariable(objetoParseado):
     def printExpresion(self):        
         return  self.var
 
-    def getValor(self,scope={}):                
-        if scope.has_key(self.var): 
+    def getValor(self,scope={}):    
+        if scope.has_key(self.var):
             if scope[self.var].getTipo() != 'Indefinido':
                 return scope[self.var]  
         return EValor('Indefinido',None )
@@ -155,10 +168,19 @@ class ELambda(objetoParseado):
     def getValor(self,scope={}):        
         # print "get valor ELambda"        
         if scope.has_key('_'):            
-            param = scope['_']            
-            if self.expr.getValor({ self.var.printExpresion():  param}).getTipo() != 'Indefinido':                            
-                return self.expr.getValor({ self.var.printExpresion():  param})
-        return EValor('Indefinido',None )
+            param = scope['_']
+            if isinstance(self.expr, EAplicacion) and scope.has_key('param'):
+                self.expr.setParam(scope['param'])
+
+            newScope = scope['scopeAcum'].copy()
+            newScope.update({self.var.printExpresion(): param})
+            # print newScope
+            # print self.var.printExpresion() + ': ' + str(param.getValor())
+            # print self.expr.getValor({ self.var.printExpresion():  param}).getTipo()
+            if self.expr.getValor(newScope).getTipo() != 'Indefinido':
+                return self.expr.getValor(newScope)
+        
+        return EValor('Lambda', self)
 
     def printTipo(self):
         return '%s -> %s' % (self.tipo, self.expr.printTipo())
@@ -187,8 +209,6 @@ class ESucc(objetoParseado):
         return 'Nat'
 
     def printExpresion(self):
-        print "en print expresion"
-        print self.getValor().getTipo()
         if self.getValor().getTipo() == 'Nat':
             return self.getValor().printValor()        
         return 'succ(%s)' % self.hijo.printExpresion()
@@ -266,6 +286,9 @@ class EValor(object):
         self.valor = valor
 
     def getTipo(self):
+        if self.tipo == 'Lambda':
+            return '('+self.valor.printTipo()+')'
+
         return self.tipo
 
     def getValor(self):
@@ -276,6 +299,8 @@ class EValor(object):
             return self.printNat()
         elif self.tipo == 'Bool':
             return self.printBool()
+        elif self.tipo == 'Lambda':
+            return self.valor.printExpresion()
         else:
             return self.printIndefinido()
 

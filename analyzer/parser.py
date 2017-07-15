@@ -8,11 +8,11 @@ def p_if_exp_then_exp_else_exp(p):
     'expression : IF expression THEN expression ELSE expression'
     p[0] = op.construirIfThenElse(p[2],p[4],p[6])
 
-def p_exp_expression_lambda(p):
-    'expression : lambda'
-    # print "en lambda"
-    # print p[1]
-    p[0] = p[1]
+# def p_exp_expression_lambda(p):
+#     'expression : lambda'
+#     # print "en lambda"
+#     # print p[1]
+#     p[0] = p[1]
 
 def p_exp_atomic_type(p):
     'atomictype : TYPE'    
@@ -83,18 +83,33 @@ def p_exp_bool(p):
 
 
 def p_exp_apply(p):    
-    'expression : LPAREN lambda RPAREN expression'
+    'expression : LPAREN lambda RPAREN subexp'
     # print "contruyo alla"
-    p[0] = op.construirAplicacion(p[2] , p[4])
+    # print p[4]
+    p[0] = op.construirAplicacion(p[2], p[4])
 
-def p_exp_apply_2(p):
-    'expression : expression expression'
-    # print "contruyo aca"
-    # print p[1]
-    p[0] = op.construirAplicacion(p[1] , p[2])
+# def p_exp_apply_2(p):
+#     'expression : expression expression'
+#     # print "contruyo aca"
+#     # print p[1]
+#     p[0] = op.construirAplicacion(p[1] , p[2])
 
 
+def p_subexp_paren_lambda(p):
+    'subexp : LPAREN lambda RPAREN subexp'
+    p[0] = [p[2]] + p[4]
 
+def p_subexp_nat(p):
+    'subexp : nat subexp'
+    p[0] = [p[1]] + p[2]
+
+def p_subexp_bool(p):
+    'subexp : bool subexp'
+    p[0] = [p[1]] + p[2]
+
+def p_subexp_empty(p):
+    'subexp : '
+    p[0] = []
 
 def p_exp_variable_expresion(p):
     'expression : variable'    
