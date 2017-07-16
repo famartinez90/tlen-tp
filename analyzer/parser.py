@@ -1,18 +1,61 @@
 import ply.yacc as yacc
 from .lexer import tokens
-import objetoParseado as op
+import objetoParseado2 as op
 import sys,traceback
 
 
 def p_if_exp_then_exp_else_exp(p):
     'expression : IF expression THEN expression ELSE expression'
-    p[0] = op.construirIfThenElse(p[2],p[4],p[6])
+    p[0] = op.construirIfThenElse(p[2], p[4], p[6])
 
-# def p_exp_expression_lambda(p):
-#     'expression : lambda'
-#     # print "en lambda"
-#     # print p[1]
-#     p[0] = p[1]
+def p_exp_expression_lambda(p):
+    'expression : lambda'
+    print 'lambda comun'
+    p[0] = p[1]
+
+def p_exp_nat(p):
+    'expression : nat'
+    #print('p_exp_nat')
+    p[0] = p[1]
+
+def p_exp_bool(p):
+    'expression : bool'    
+    p[0] = p[1]
+
+def p_exp_apply(p):
+    'expression : LPAREN lambda RPAREN subexp'
+    print "lambda aplicada"
+    # print p[4]
+    p[0] = op.construirAplicacion(p[2], p[4])
+
+def p_exp_variable_expresion(p):
+    'expression : variable'    
+    p[0] = p[1]    
+
+def p_subexp_paren_lambda(p):
+    'subexp : LPAREN lambda RPAREN subexp'
+    p[0] = [p[2]] + p[4]
+
+def p_subexp_nat(p):
+    'subexp : nat subexp'
+    p[0] = [p[1]] + p[2]
+
+def p_subexp_bool(p):
+    'subexp : bool subexp'
+    p[0] = [p[1]] + p[2]
+
+def p_subexp_empty(p):
+    'subexp : '
+    p[0] = []
+
+# def p_term_lparen_rparen(p):
+#     'expression : LPAREN expression RPAREN'
+#     p[0] = p[2]
+
+def p_exp_lambda(p):    
+    'lambda : LAMBDA variable DOBLEDOT type DOT expression'
+    # print "contruyo lambda"
+    p[0] = op.construirLambda(p[2], p[4], p[6])
 
 def p_exp_atomic_type(p):
     'atomictype : TYPE'    
@@ -31,11 +74,6 @@ def p_exp_variable(p):
     # print 'contruyo variable' 
     # print p[1]
     p[0] = op.construirVariable(p[1])        
-
-def p_exp_lambda(p):    
-    'lambda : LAMBDA variable DOBLEDOT type DOT expression'
-    # print "contruyo lambda"
-    p[0] = op.construirLambda(p[2],p[4],p[6])
 
 def p_exp_iszero(p):
     'bool : ISZERO LPAREN expression RPAREN'    
@@ -57,67 +95,10 @@ def p_exp_pred(p):
     'nat : PRED LPAREN expression RPAREN'
     p[0] = op.construirPred(p[3])
 
-
 def p_exp_zero(p):
     'nat : ZERO'
     p[0] = op.construirZero()
     
-def p_exp_nat(p):
-    'expression : nat'
-    #print('p_exp_nat')
-    p[0] = p[1]
-
-def p_exp_bool(p):
-    'expression : bool'    
-    p[0] = p[1]
-
-# def p_exp_apply(p):
-#     'expression : lambda expression'
-#     #'expression : LPAREN lambda RPAREN expression'
-#     #print 'p_exp_lambda_expresion' 
-#     # 1. evaluar si p[1] acepta tipo de p[2]
-#     # 2. resolver tipos en p[1] en base a la aplicacion de p[2]
-#     # 3. tratar de resolver un valor en base  a la aplicacion.    
-#     p[0] = op.construirAplicacion(p[1] , p[2])
-#     #p[0] = op.construirAplicacion(p[2] , p[4])
-
-
-def p_exp_apply(p):    
-    'expression : LPAREN lambda RPAREN subexp'
-    # print "contruyo alla"
-    # print p[4]
-    p[0] = op.construirAplicacion(p[2], p[4])
-
-# def p_exp_apply_2(p):
-#     'expression : expression expression'
-#     # print "contruyo aca"
-#     # print p[1]
-#     p[0] = op.construirAplicacion(p[1] , p[2])
-
-
-def p_subexp_paren_lambda(p):
-    'subexp : LPAREN lambda RPAREN subexp'
-    p[0] = [p[2]] + p[4]
-
-def p_subexp_nat(p):
-    'subexp : nat subexp'
-    p[0] = [p[1]] + p[2]
-
-def p_subexp_bool(p):
-    'subexp : bool subexp'
-    p[0] = [p[1]] + p[2]
-
-def p_subexp_empty(p):
-    'subexp : '
-    p[0] = []
-
-def p_exp_variable_expresion(p):
-    'expression : variable'    
-    p[0] = p[1]    
-
-def p_term_lparen_rparen(p):
-    'expression : LPAREN expression RPAREN'
-    p[0] = p[2]
     
 def p_error(p):
     # print ("Hubo un error en el parseo.")
@@ -130,8 +111,10 @@ parser = yacc.yacc(debug=True)
 def apply_parser(string):
     try:
         parseado = parser.parse(string)
-        if parseado is not None:            
-            return parseado.printExpresion() + ':'+ parseado.printTipo()            
+        if parseado is not None and not isinstance(parseado.getExpresion(), op.EError):            
+            return str(parseado.getExpresion()) + ':'+ parseado.getTipo()
+        else:
+            return parseado.getExpresion().getExpresion() + parseado.getExpresion().getTipo()
     except :  
         traceback.print_exc(file=sys.stdout)
         # print sys.exc_info()[0]          

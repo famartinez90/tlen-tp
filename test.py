@@ -10,6 +10,8 @@ assert parse('false') == 'false:Bool'
 print 'Caso: false OK!'
 assert parse('iszero(0)') == 'true:Bool'
 print 'Caso: iszero(0) OK!'
+assert parse('iszero(true)') == 'Error: iszero espera un valor de tipo Nat'
+print 'Caso: iszero(true) OK!'
 assert parse('succ(0)') == 'succ(0):Nat'
 print 'Caso: succ(0) OK!'
 assert parse('pred(0)') == '0:Nat'
@@ -49,8 +51,28 @@ print 'Caso: if iszero(succ(0)) then 0 else if true then pred(succ(0)) else succ
 assert parse('succ(if iszero(0) then succ(0) else 0)') == 'succ(succ(0)):Nat'
 print 'Caso: succ(if iszero(0) then succ(0) else 0) OK!'
 
+print '\nTesteando lambdas sin aplicacion:\n'
+
+assert parse('\\z:Nat.z') == '\\z:Nat.z:Nat->Nat'
+print 'Caso: \\z:Nat.z OK!'
+assert parse('\\z:Nat.succ(z)') == '\\z:Nat.succ(z):Nat->Nat'
+print 'Caso: \\z:Nat.succ(z) OK!'
+assert parse('\\z:Nat.pred(z)') == '\\z:Nat.pred(z):Nat->Nat'
+print 'Caso: \\z:Nat.pred(z) OK!'
+assert parse('\\z:Nat.true') == '\\z:Nat.true:Nat->Bool'
+print 'Caso: \\z:Nat.true OK!'
+assert parse('\\z:Nat.iszero(z)') == '\\z:Nat.iszero(z):Nat->Bool'
+print 'Caso: \\z:Nat.iszero(z) OK!'
+assert parse('\\z:Nat.if z then 0 else succ(0)') == '\\z:Nat.if z then 0 else succ(0):Nat->(Bool->Nat)'
+print 'Caso: \\z:Nat.\\y:Bool.if y then z else succ(z) OK!'
+print parse('\\z:Nat.\\y:Bool.if y then z else succ(z)')
+assert parse('\\z:Nat.\\y:Bool.if y then z else succ(z)') == '\\z:Nat.\\y:Bool.if y then z else succ(z):Nat->Bool->(Bool->Nat)'
+print 'Caso: \\z:Nat.\\y:Bool.if y then z else succ(z) OK!'
+
+
 print '\nTesteando lambdas con aplicacion:\n'
 
+print parse('(\\z:Nat.z) 0')
 assert parse('(\\z:Nat.z) 0') == '0:Nat'
 print 'Caso: (\\z:Nat.z) 0 OK!'
 assert parse('(\\z:Nat.succ(z)) 0') == 'succ(0):Nat'
@@ -67,6 +89,9 @@ assert parse('(\\z:Nat.iszero(z)) 0') == 'true:Bool'
 print 'Caso: (\\z:Nat.iszero(z)) 0 OK!'
 assert parse('(\\z:Nat.iszero(succ(z))) 0') == 'false:Bool'
 print 'Caso: (\\z:Nat.iszero(succ(z))) 0 OK!'
+
+
+print parse('(\\z:Nat.if z then 0 else succ(0)) false')
 assert parse('(\\z:Nat.if z then 0 else succ(0)) false') == 'succ(0):Nat'
 print 'Caso: (\\z:Nat.if z then 0 else succ(0)) false OK!'
 assert parse('(\\z:Nat.if z then 0 else succ(0)) true') == '0:Nat'
