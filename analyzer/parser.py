@@ -7,10 +7,74 @@ def p_exp_expression_1(p):
     'expression : openexpression'            
     p[0] = p[1] 
 
+def p_exp_expression_1_1(p):
+    'expression : lambda'            
+    p[0] = p[1] 
+
+def p_exp_expression_2(p):
+    'expression : application'            
+    p[0] = p[1] 
+
+def p_exp_expression_3(p):    
+    'application : closelambda  closeexpression'
+    # print "contruyo alla" lambda
+    p[0] = op.construirAplicacion(p[1] , p[2])
+
+
+def p_exp_expression_4(p):    
+    'application : closelambda  openexpression'
+    # print "contruyo alla" lambda
+    p[0] = op.construirAplicacion(p[1] , p[2])
+
+def p_exp_expression_4_1(p):    
+    'application : lambda  openexpression'
+    # print "contruyo alla" lambda
+    p[0] = op.construirAplicacion(p[1] , p[2])
+
+def p_exp_expression_5(p):    
+    'application : application  closeexpression'
+    # print "contruyo alla" lambda
+    p[0] = op.construirAplicacion(p[1] , p[2])
+
+
+def p_exp_expression_6(p):    
+    'application : application  openexpression'
+    # print "contruyo alla" lambda
+    p[0] = op.construirAplicacion(p[1] , p[2])
+
+
+def p_exp_expression_7(p):    
+    'closeexpression : LPAREN application RPAREN'
+    # print "contruyo alla" lambda
+    p[0] = p[2]
+
+def p_exp_expression_8(p):    
+    'closeexpression : closelambda'
+    # print "contruyo alla" lambda
+    p[0] = p[1]
+
+def p_exp_expression_9(p):    
+    'closelambda :  LPAREN lambda RPAREN'
+    # print "contruyo alla" lambda
+    p[0] = p[2]
+
+def p_exp_expression_10(p):    
+    'lambda : LAMBDA variable DOBLEDOT type DOT openexpression'    
+    # print "contruyo lambda"
+    # print p[2].getValor()
+    p[0] = op.construirLambda(p[2],p[4],p[6])
+
+def p_exp_expression_11(p):    
+    'lambda : LAMBDA variable DOBLEDOT type DOT closeexpression'    
+    # print "contruyo lambda"
+    # print p[2].getValor()
+    p[0] = op.construirLambda(p[2],p[4],p[6])
+
 def p_exp_expression_openexpression(p):
     'expression : closeexpression'        
     print "aca"
     p[0] = p[1] 
+
 
 def p_if_exp_then_exp_else_exp(p):
     'openexpression : IF openexpression THEN openexpression ELSE openexpression'
@@ -93,54 +157,49 @@ def p_exp_bool(p):
 #     'expression : openexpression'            
 #     p[0] = op.construirAplicacion(p[1] , p[2])
 
-def p_baselambda_baseexpression(p):
-    'closeexpression : LPAREN openlambda  openexpression RPAREN'            
-    print "aca"
-    p[0] = op.construirAplicacion(p[2] , p[3])
+# def p_baselambda_baseexpression(p):
+#     'closeexpression : LPAREN openlambda  openexpression RPAREN'            
+#     print "aca"
+#     p[0] = op.construirAplicacion(p[2] , p[3])
 
-def p_baselambda_baseexpressiona(p):
-    'closeexpression : LPAREN openlambda RPAREN'            
-    # print "aca"
-    p[0] = p[2]
+# def p_baselambda_baseexpressiona(p):
+#     'closeexpression : LPAREN openlambda RPAREN'            
+#     # print "aca"
+#     p[0] = p[2]
 
 
-def p_exp_expression_lambda(p):
-    'openexpression : openlambda'    
+# def p_exp_expression_lambda(p):
+#     'openexpression : openlambda'    
     # print "en lambda"
     # print p[1]
     # print "aca" 
     # print p[1]
-    p[0] = p[1]
+    # p[0] = p[1]
 
 
-def p_exp_lambda(p):    
-    'openlambda : LAMBDA variable DOBLEDOT type DOT openexpression'    
-    # print "contruyo lambda"
-    # print p[2].getValor()
-    p[0] = op.construirLambda(p[2],p[4],p[6])
 
-def p_exp_lambda_2(p):    
-    'openlambda : LAMBDA variable DOBLEDOT type DOT closeexpression'    
-    # print "contruyo lambda"
-    # print p[2].getValor()
-    p[0] = op.construirLambda(p[2],p[4],p[6])
+# def p_exp_lambda_2(p):    
+#     'openlambda : LAMBDA variable DOBLEDOT type DOT closeexpression'    
+#     # print "contruyo lambda"
+#     # print p[2].getValor()
+#     p[0] = op.construirLambda(p[2],p[4],p[6])
 
 # def p_exp_complexlambda(p):    
 #     'baselambda : LAMBDA variable DOBLEDOT type DOT LPAREN complexexpression RPAREN'    
 #     # print "contruyo lambda"
 #     p[0] = op.construirLambda(p[2],p[4],p[7])
 
-def p_exp_lambda_baselambda_2(p):    
-    'openexpression : LPAREN openexpression RPAREN openexpression '
-    # print "en lambda"
-    # print p[1]
-    print "aca"
-    p[0] = p[1]
+# def p_exp_lambda_baselambda_2(p):    
+#     'openexpression : LPAREN openexpression RPAREN openexpression '
+#     # print "en lambda"
+#     # print p[1]
+#     print "aca"
+#     p[0] = p[1]
 
-def p_exp_lambda_baselambda(p):
-    'openexpression : closeexpression  openexpression'    
-    # print p[1]    
-    p[0] = op.construirAplicacion(p[1] , p[2]) 
+# def p_exp_lambda_baselambda(p):
+#     'openexpression : closeexpression  openexpression'    
+#     # print p[1]    
+#     p[0] = op.construirAplicacion(p[1] , p[2]) 
 
 # def p_exp_lambda_baselambda(p):
 #     'expression : LPAREN  openexpression RPAREN  openexpression'
@@ -156,10 +215,6 @@ def p_exp_lambda_baselambda(p):
 
 
 
-# def p_exp_apply(p):    
-#     'openexpression : closeexpression  openexpression'
-#     # print "contruyo alla" lambda
-#     p[0] = op.construirAplicacion(p[1] , p[2])
 
 # def p_exp_apply_2(p):
 #     'expression : expression baseexpression'
@@ -184,7 +239,7 @@ def apply_parser(string):
     try:
         parseado = parser.parse(string)
         if parseado is not None:            
-            return parseado.printExpresion() + ':'+ parseado.printTipo()            
+            return  '%s:%s'  % (parseado.printExpresion(), parseado.printTipo())
     except :  
         traceback.print_exc(file=sys.stdout)
         # print sys.exc_info()[0]          

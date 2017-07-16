@@ -64,6 +64,33 @@ def construirIfThenElse(cond,exprIf,exprElse):
     return EIfThenElse(cond,exprIf,exprElse)
 
 
+class ETipo(object):
+    def __init__(self,tipo,tipo2=None):
+        if tipo2 == None:
+            self.tipoClase = 'atomico'
+            self.tipo = tipo
+        else:
+            self.tipoClase = 'lambda'
+            if type(tipo) == str or type(tipo2) == str:
+                raise Exception('tipo y tipo2 deben ser instancias de la clase ETipo')
+            self.tipo = tipo
+            self.tipo2 = tipo2
+
+    def __str__(self):
+        if self.tipoClase == 'atomico':
+            return self.tipo
+        else:
+            if self.tipo.tipoClase == 'atomico':
+                a = '%s' %  self.tipo
+            else:
+                a = '(%s)' %  self.tipo
+
+            if self.tipo2.tipoClase == 'atomico':
+                b = '%s' %  self.tipo2
+            else:
+                b = '(%s)' %  self.tipo2
+            return '%s -> %s' %s (a,b)
+
 class EIfThenElse(objetoParseado):
     def __init__(self,cond,exprIf,exprElse):
         self.cond = cond
@@ -72,12 +99,15 @@ class EIfThenElse(objetoParseado):
 
     def getValor(self,scope={}):
         # TODO: chequear q la condicion sea bool         
-        if self.cond.getValor(scope).getValor():
-            if  self.exprIf.getValor(scope).getTipo() != 'Indefinido':
+        c = self.cond.getValor(scope)
+        if c.getTipo() != 'Indefinido' :
+            if c.getValor() and self.exprIf.getValor(scope).getTipo() != 'Indefinido':
+                print "salgo aca"
                 return self.exprIf.getValor(scope)
-        else:    
-            if  self.exprElse.getValor(scope).getTipo() != 'Indefinido':
+            elif c.getValor() and self.exprElse.getValor(scope).getTipo() != 'Indefinido':
+                print "salgo aca2"
                 return self.exprElse.getValor(scope)
+        print "salgo aca3"
         return EValor('Indefinido','None' )
         # if p[4].getTipo() != p[6].getTipo():
         #     print "Error: las dos opciones del if deben tener el mismo tipo"
@@ -87,7 +117,11 @@ class EIfThenElse(objetoParseado):
         #     return "Error: el valor de la guarda debe ser True o False"
 
     def printTipo(self):
-        return self.exprIf.printTipo()
+        if  self.exprIf.getValor().getTipo() !=  'Indefinido' :
+            return self.exprIf.getValor().getTipo()
+        elif   self.exprElse.getValor().getTipo() !=  'Indefinido' :
+            return self.exprElse.getValor().getTipo()
+        return ETipo('Indefinido')
 
     def printExpresion(self):
 
@@ -135,7 +169,7 @@ class EVariable(objetoParseado):
         self.var = var
 
     def printTipo(self):
-        return '--'
+        return ETipo('Indefinido')
 
     def printExpresion(self):        
         return  self.var
@@ -177,10 +211,10 @@ class EZero(objetoParseado):
         pass
 
     def getValor(self,scope={}):
-        return EValor('Nat',0)
+        return EValor(ETipo('Nat'),0)
 
     def printTipo(self):
-        return 'Nat'
+        return ETipo('Nat')
 
     def printExpresion(self):
         return '0'
@@ -190,7 +224,7 @@ class ESucc(objetoParseado):
         self.hijo = param
 
     def printTipo(self):
-        return 'Nat'
+        return ETipo('Nat')
 
     def printExpresion(self):
         # print "en print expresion"
@@ -211,7 +245,7 @@ class EPred(objetoParseado):
         self.hijo = param
 
     def printTipo(self):
-        return 'Nat'
+        return ETipo('Nat')
 
     def printExpresion(self):
         if self.getValor().getTipo() == 'Nat':
@@ -221,7 +255,7 @@ class EPred(objetoParseado):
     def getValor(self,scope={}):
         if (self.hijo.getValor(scope).getTipo() == 'Nat'):
             if self.hijo.getValor(scope).getValor() > 0:
-                return EValor('Nat', self.hijo.getValor(scope).getValor()-1)
+                return EValor(ETipo('Nat'), self.hijo.getValor(scope).getValor()-1)
             else:
                 return EValor('Nat', self.hijo.getValor(scope).getValor())
 
@@ -252,10 +286,10 @@ class EBool(objetoParseado):
         self.valor = valor
 
     def getValor(self,scope={}):
-        return EValor('Bool',bool(self.valor))
+        return EValor( ETipo('Bool'), bool(self.valor) )
 
     def printTipo(self):        
-        return 'Bool'         
+        return  ETipo('Bool')
 
     def printExpresion(self):
         if self.valor:

@@ -1,3 +1,2 @@
-\z:Nat.z 0
-(\x:Bool.(\z:Nat.if x then z else succ(z))) true
+if true then 0 else succ(pred(0))
 
