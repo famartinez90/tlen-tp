@@ -89,9 +89,6 @@ assert parse('(\\z:Nat.iszero(z)) 0') == 'true:Bool'
 print 'Caso: (\\z:Nat.iszero(z)) 0 OK!'
 assert parse('(\\z:Nat.iszero(succ(z))) 0') == 'false:Bool'
 print 'Caso: (\\z:Nat.iszero(succ(z))) 0 OK!'
-
-
-print parse('(\\z:Nat.if z then 0 else succ(0)) false')
 assert parse('(\\z:Nat.if z then 0 else succ(0)) false') == 'succ(0):Nat'
 print 'Caso: (\\z:Nat.if z then 0 else succ(0)) false OK!'
 assert parse('(\\z:Nat.if z then 0 else succ(0)) true') == '0:Nat'

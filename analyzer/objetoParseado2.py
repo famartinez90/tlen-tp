@@ -146,7 +146,8 @@ class EIfThenElse(objetoParseado2):
 
     def getValor(self, scope={}):
         # TODO: chequear q la condicion sea bool
-        if self.cond.getTipo() == 'Var':
+        
+        if self.cond.getTipo() == 'Var' and self.cond.getValor(scope).getValor() is None:
             return self.cond
 
         if self.cond.getValor(scope).getValor() is None:
