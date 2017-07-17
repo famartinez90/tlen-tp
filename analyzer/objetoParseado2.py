@@ -49,6 +49,9 @@ class EAplicacion(objetoParseado2):
         self.lamb = lamb
         self.param = param
 
+    def getLamb(self):
+        return self.lamb
+
     def setParam(self, param):
         self.param = param
 
@@ -65,12 +68,17 @@ class EAplicacion(objetoParseado2):
         return 'ERROR'
 
     def getValor(self, scope={}):
+        print self.lamb.getExpresion()
+
+
         if len(self.param) == 0 and len(scope) == 0:
             return EValor('Indefinido', None)
 
         s = {
-            'assignment': self.param[0].getValor(scope)
+            'assignment': self.param[0].getValor(scope),
+            'passDown': self.param[1:]
         }
+        s.update(scope)
 
         return self.lamb.getValor(s)
 
@@ -93,11 +101,22 @@ class ELambda(objetoParseado2):
     def getValor(self, scope={}):
         if scope.has_key('assignment'):
             param = scope['assignment']
+            
+            if isinstance(self.expr, EAplicacion):
+                self.expr.setParam(scope['passDown'])
+           
+            scope.pop('assignment', None)
+            scope.pop('passDown', None)
+
+            newScope = scope
+            newScope.update({self.var.getExpresion(): param})
+
+            # construirAplicacion(lamb, param)
+
             # if isinstance(self.expr, EAplicacion) and scope.has_key('param'):
             #     self.expr.setParam(scope['param'])
 
             # newScope = scope['scopeAcum'].copy()
-            newScope = {self.var.getExpresion(): param}
 
             if self.expr.getValor(newScope).getTipo() != 'Indefinido':
                 return self.expr.getValor(newScope)

@@ -4,6 +4,11 @@ import objetoParseado2 as op
 import sys,traceback
 
 
+# precedence = [
+#     ('left', 'LAMBDA')
+# ]
+
+
 def p_if_exp_then_exp_else_exp(p):
     'expression : IF expression THEN expression ELSE expression'
     p[0] = op.construirIfThenElse(p[2], p[4], p[6])
@@ -54,7 +59,7 @@ def p_subexp_empty(p):
 
 def p_exp_lambda(p):    
     'lambda : LAMBDA variable DOBLEDOT type DOT expression'
-    # print "contruyo lambda"
+    print "contruyo lambda"
     p[0] = op.construirLambda(p[2], p[4], p[6])
 
 def p_exp_atomic_type(p):
@@ -71,8 +76,6 @@ def p_exp_type(p):
 
 def p_exp_variable(p):
     'variable : VARIABLE'       
-    # print 'contruyo variable' 
-    # print p[1]
     p[0] = op.construirVariable(p[1])        
 
 def p_exp_iszero(p):

@@ -100,7 +100,7 @@ print 'Caso: (\\z:Nat.if z then 0 else succ(0)) iszero(succ(0)) OK!'
 assert parse('(\\z:Nat.if iszero(z) then succ(0) else succ(z)) succ(pred(succ(0)))') == 'succ(succ(0)):Nat'
 print 'Caso: (\\z:Nat.if iszero(z) then succ(0) else succ(z)) succ(pred(succ(0))) OK!'
 
-print '\nTesteando lambdas con aplicacion complejos:\n'
+print '\nTesteando lambdas con y sin aplicacion complejos:\n'
 
 assert parse('(\\x:Bool.(\\z:Nat.if x then z else succ(z))) true 0') == '0:Nat'
 print 'Caso: (\\x:Bool.(\\z:Nat.if x then z else succ(z))) true 0 OK!'
@@ -108,11 +108,16 @@ assert parse('(\\x:Nat->Nat.\\y:Nat. (\\z:Bool.if z then x y else 0)) (\\j:Nat.s
 print 'Caso: (\\x:Nat->Nat.\\y:Nat. (\\z:Bool.if z then x y else 0)) (\\j:Nat.succ(j)) succ(succ(0)) true OK!'
 assert parse('(\\z:Nat.iszero(pred(z))) succ(0)') == 'true:Bool'
 print 'Caso: (\\z:Nat.iszero(pred(z))) succ(0) OK!'
-
-assert parse('(\\x:Nat->Nat.x) (\\j:Nat.succ(j))') == '\\j:Nat.succ(j):(Nat -> Nat)'
+assert parse('(\\x:Nat->Nat.x) (\\j:Nat.succ(j))') == '\\j:Nat.succ(j):(Nat->Nat)'
 print 'Caso: (\\x:Nat->Nat.x) (\\j:Nat.succ(j)) OK!'
 
-print parse('(\\x:Nat->Nat.\\y:Nat.(\\z:Bool.if z then x y else 0))')
+print parse('(\\x:Nat->Nat.(\\y:Nat.(\\z:Bool.if z then x y else 0))) (\\j:Nat.succ(j)) succ(succ(0)) false')
+assert parse('(\\x:Nat->Nat.\\y:Nat. (\\z:Bool.if z then x y else 0)) (\\j:Nat.succ(j)) succ(succ(0)) false') == '0:Nat'
+print 'Caso: (\\x:Nat->Nat.\\y:Nat. (\\z:Bool.if z then x y else 0)) (\\j:Nat.succ(j)) succ(succ(0)) false OK!'
+
+
+
+print parse('(\\x:Nat->Nat.(\\y:Nat.(\\z:Bool.if z then x y else 0)))')
 
 
 print '\nTesting finalizado, todos los casos correctos!\n'
