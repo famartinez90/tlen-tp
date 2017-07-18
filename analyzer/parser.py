@@ -129,6 +129,9 @@ parser = yacc.yacc(debug=True)
 def apply_parser(string):
     try:
         parseado = parser.parse(string)
+        if parseado is not None and parseado.getTipo() == 'Var':
+            return 'Error: el termino no es cerrado ('+parseado.getExpresion()+' esta libre)'
+
         if parseado is not None and not isinstance(parseado.getExpresion(), op.EError) and not isinstance(parseado, op.EError):            
             return str(parseado.getExpresion()) + ':'+ parseado.getTipo()
         elif not isinstance(parseado, op.EError):
