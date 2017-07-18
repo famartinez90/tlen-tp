@@ -68,9 +68,6 @@ class EAplicacion(objetoParseado2):
         return 'ERROR'
 
     def getValor(self, scope={}):
-        print self.lamb.getExpresion()
-
-
         if len(self.param) == 0 and len(scope) == 0:
             return EValor('Indefinido', None)
 
@@ -79,6 +76,9 @@ class EAplicacion(objetoParseado2):
             'passDown': self.param[1:]
         }
         s.update(scope)
+
+        if self.lamb.getTipo() == 'Var' and self.lamb.getValor(scope).getValor() is not None:
+            return self.lamb.getValor(scope).getValor().getValor(s)
 
         return self.lamb.getValor(s)
 
@@ -101,7 +101,7 @@ class ELambda(objetoParseado2):
     def getValor(self, scope={}):
         if scope.has_key('assignment'):
             param = scope['assignment']
-            
+
             if isinstance(self.expr, EAplicacion):
                 self.expr.setParam(scope['passDown'])
            
@@ -117,7 +117,7 @@ class ELambda(objetoParseado2):
             #     self.expr.setParam(scope['param'])
 
             # newScope = scope['scopeAcum'].copy()
-
+            
             if self.expr.getValor(newScope).getTipo() != 'Indefinido':
                 return self.expr.getValor(newScope)
         
@@ -165,6 +165,8 @@ class EIfThenElse(objetoParseado2):
 
     def getValor(self, scope={}):
         # TODO: chequear q la condicion sea bool
+
+        # print scope
         
         if self.cond.getTipo() == 'Var' and self.cond.getValor(scope).getValor() is None:
             return self.cond
