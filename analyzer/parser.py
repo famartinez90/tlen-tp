@@ -112,10 +112,10 @@ def p_exp_zero(p):
     # print 'zero'
     p[0] = op.construirZero()
 
-def p_exp_zero_zero(p):
-    'nat : ZERO ZERO'
+def p_exp_nat_nat(p):
+    'expression : nat nat'
     # print 'zero'
-    p[0] = op.construirError('La parte izquierda de la aplicacion (0) no es una funcion con dominio en Nat')
+    p[0] = op.construirError('La parte izquierda de la aplicacion ('+p[1].getExpresion()+') no es una funcion con dominio en Nat')
     
     
 def p_error(p):
