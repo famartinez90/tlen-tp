@@ -25,6 +25,9 @@ def construirLambda(var, tipo, expr):
 def construirAplicacion(lamb, param):
     return EAplicacion(lamb, param)
 
+def construirError(mensaje):
+    return EError(mensaje)
+
 
 class objetoParseado2(object):
 
@@ -111,13 +114,6 @@ class ELambda(objetoParseado2):
             newScope = scope
             newScope.update({self.var.getExpresion(): param})
 
-            # construirAplicacion(lamb, param)
-
-            # if isinstance(self.expr, EAplicacion) and scope.has_key('param'):
-            #     self.expr.setParam(scope['param'])
-
-            # newScope = scope['scopeAcum'].copy()
-            
             if self.expr.getValor(newScope).getTipo() != 'Indefinido':
                 return self.expr.getValor(newScope)
         
@@ -149,6 +145,9 @@ class EIfThenElse(objetoParseado2):
         self.exprElse = exprElse
     
     def getExpresion(self):
+        if isinstance(self.getValor(), EError):
+            return self.getValor()
+
         if self.getValor().getTipo() != 'Indefinido' and self.getValor().getTipo() != 'Var':            
             return self.getValor().getExpresion()
 
@@ -157,9 +156,9 @@ class EIfThenElse(objetoParseado2):
     def getTipo(self):
         if self.cond.getTipo() == 'Var':
             if self.exprIf.getTipo() == 'Var':
-                return '(Bool->'+self.exprElse.getTipo()+')'
+                return self.exprElse.getTipo()
 
-            return '(Bool->'+self.exprIf.getTipo()+')'
+            return self.exprIf.getTipo()
 
         return self.exprIf.getTipo()
 
@@ -173,6 +172,10 @@ class EIfThenElse(objetoParseado2):
 
         if self.cond.getValor(scope).getValor() is None:
             print 'La condicion del if esta indefinida'
+
+        if self.exprIf.getValor(scope).getTipo() != self.exprElse.getValor(scope).getTipo():
+            if self.exprIf.getValor(scope).getTipo() != 'Indefinido' and self.exprElse.getValor(scope).getTipo() != 'Indefinido':
+                return EError('las dos opciones del if deben tener el mismo tipo')
 
         if self.cond.getValor(scope).getValor():
             if self.exprIf.getValor(scope).getTipo() != 'Indefinido':

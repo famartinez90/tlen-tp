@@ -111,6 +111,11 @@ def p_exp_zero(p):
     'nat : ZERO'
     # print 'zero'
     p[0] = op.construirZero()
+
+def p_exp_zero_zero(p):
+    'nat : ZERO ZERO'
+    # print 'zero'
+    p[0] = op.construirError('La parte izquierda de la aplicacion (0) no es una funcion con dominio en Nat')
     
     
 def p_error(p):
@@ -124,10 +129,13 @@ parser = yacc.yacc(debug=True)
 def apply_parser(string):
     try:
         parseado = parser.parse(string)
-        if parseado is not None and not isinstance(parseado.getExpresion(), op.EError):            
+        if parseado is not None and not isinstance(parseado.getExpresion(), op.EError) and not isinstance(parseado, op.EError):            
             return str(parseado.getExpresion()) + ':'+ parseado.getTipo()
-        else:
+        elif not isinstance(parseado, op.EError):
             return parseado.getExpresion().getExpresion() + parseado.getExpresion().getTipo()
+        else:
+            return str(parseado.getExpresion()) + parseado.getTipo()
+
     except :  
         traceback.print_exc(file=sys.stdout)
         # print sys.exc_info()[0]          

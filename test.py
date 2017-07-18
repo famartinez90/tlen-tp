@@ -63,10 +63,10 @@ assert parse('\\z:Nat.true') == '\\z:Nat.true:Nat->Bool'
 print 'Caso: \\z:Nat.true OK!'
 assert parse('\\z:Nat.iszero(z)') == '\\z:Nat.iszero(z):Nat->Bool'
 print 'Caso: \\z:Nat.iszero(z) OK!'
-assert parse('\\z:Nat.if z then 0 else succ(0)') == '\\z:Nat.if z then 0 else succ(0):Nat->(Bool->Nat)'
+assert parse('\\z:Nat.if z then 0 else succ(0)') == '\\z:Nat.if z then 0 else succ(0):Nat->Nat'
 print 'Caso: \\z:Nat.\\y:Bool.if y then z else succ(z) OK!'
 print parse('\\z:Nat.\\y:Bool.if y then z else succ(z)')
-assert parse('\\z:Nat.\\y:Bool.if y then z else succ(z)') == '\\z:Nat.\\y:Bool.if y then z else succ(z):Nat->Bool->(Bool->Nat)'
+assert parse('\\z:Nat.\\y:Bool.if y then z else succ(z)') == '\\z:Nat.\\y:Bool.if y then z else succ(z):Nat->Bool->Nat'
 print 'Caso: \\z:Nat.\\y:Bool.if y then z else succ(z) OK!'
 
 
@@ -118,5 +118,14 @@ print '\nTesteando ejemplos enunciado:\n'
 print parse('0')
 print parse('true')
 print parse('if true then 0 else false')
+print parse('\\x:Bool.if x then false else true')
+print parse('\\x:Nat.succ(0)')
+print parse('\\z:Nat.z')
+print parse('succ(succ(succ(0)))')
+print parse('succ(succ(pred(0)))')
+print parse('\\x:Nat.succ(x)')
+print parse('0 0')
+print parse('\\x:Nat->Nat.\\y:Nat.(\\z:Bool.if z then x y else 0)')
+print parse('(\\x:Nat->Nat.(\\y:Nat. (\\z:Bool.if z then x y else 0))) (\\j:Nat.succ(j)) succ(succ(succ(succ(succ(succ(succ(succ(0)))))))) true')
 
 print '\nTesting finalizado, todos los casos correctos!\n'
