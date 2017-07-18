@@ -126,7 +126,7 @@ print parse('x')
 print parse('succ(succ(pred(0)))')
 print parse('\\x:Nat.succ(x)')
 print parse('0 0')
-print parse('\\x:Nat->Nat.\\y:Nat.(\\z:Bool.if z then x y else 0)')
+print parse('\\x:Nat->Nat.\\y:Nat.\\z:Bool.if z then x y else 0')
 print parse('(\\x:Nat->Nat.(\\y:Nat. (\\z:Bool.if z then x y else 0))) (\\j:Nat.succ(j)) succ(succ(succ(succ(succ(succ(succ(succ(0)))))))) true')
 
 print '\nTesting finalizado, todos los casos correctos!\n'

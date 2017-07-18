@@ -68,7 +68,7 @@ class EAplicacion(objetoParseado2):
         if self.getValor().getTipo() != 'Indefinido':        
             return self.getValor().getTipo()
         
-        return 'ERROR'
+        return self.lamb.getTipo()
 
     def getValor(self, scope={}):
         if len(self.param) == 0 and len(scope) == 0:
