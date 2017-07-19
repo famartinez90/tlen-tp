@@ -91,11 +91,6 @@ def t_error(t):
     print ('Illegal character '+str(t))
     t.lexer.skip(1)
 
-
-precedence = (
-    ('left', 'PLUS', 'MINUS'),
-    ('left', 'TIMES', 'DIVIDE'),
-)
 # Build the lexer
 lexer = lex.lex()
 

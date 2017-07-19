@@ -1,1 +1,123 @@
-\section{TEST}
+\section{Desarrollo}
+
+\subsection{Tokens}
+Dado el problema planteado se definieron los siguientes tokens para la gramática encargada de parsear el conjunto de 
+expresiones q conforma el cálculo lambda. Las expresiones regulares utilizadas para parsear cada uno de los tokens se 
+pueden con mayor claridad en la sección de Código Fuente, en el archivo lexer.py.
+
+\begin{itemize}
+\item \textbf{TRUE} r'(?i)true'
+\item \textbf{FALSE} r'(?i)false'
+\item \textbf{ZERO} r'0'
+\item \textbf{ISZERO} r'(?i)iszero' 
+\item \textbf{LPAREN} r'\\('
+\item \textbf{RPAREN} r'\\)'
+\item \textbf{SUCC} r'(?i)succ' 
+\item \textbf{PRED} r'(?i)pred'
+\item \textbf{IF} r'(?i)if'
+\item \textbf{THEN} r'(?i)then'
+\item \textbf{ELSE} r'(?i)else'
+\item \textbf{ARROW} r'->'
+\item \textbf{LAMBDA} r'\\'
+\item \textbf{TYPE} r'(Nat|Bool)'
+\item \textbf{DOT} r'\.'
+\item \textbf{DOBLEDOT} r':'
+\item \textbf{VARIABLE} r'([jvwxyz])'
+\end{itemize}
+
+\subsection{Gramática}
+Una vez definidos los tokens, se trabajó sobre varias versiones de gramáticas. Como resultante de un proceso 
+iterativo en el cual se fueron adaptando, e incluso llegando a rehacer de cero las grámaticas, se llegó a la 
+gramática que se presenta a continuación. 
+
+\begin{verbatim}
+  
+Rule 0     S' -> expression
+Rule 1     expression -> IF expression THEN expression ELSE expression
+Rule 2     expression -> nat
+Rule 3     expression -> bool
+Rule 4     expression -> LPAREN lambda RPAREN subexp
+Rule 5     expression -> lambda
+Rule 6     expression -> variable
+Rule 7     expression -> variable variable
+Rule 8     subexp -> LPAREN lambda RPAREN subexp
+Rule 9     subexp -> nat subexp
+Rule 10    subexp -> bool subexp
+Rule 11    subexp -> <empty>
+Rule 12    lambda -> LAMBDA variable DOBLEDOT type DOT expression
+Rule 13    atomictype -> TYPE
+Rule 14    type -> atomictype ARROW type
+Rule 15    type -> atomictype
+Rule 16    variable -> VARIABLE
+Rule 17    bool -> ISZERO LPAREN expression RPAREN
+Rule 18    bool -> TRUE
+Rule 19    bool -> FALSE
+Rule 20    nat -> SUCC LPAREN expression RPAREN
+Rule 21    nat -> PRED LPAREN expression RPAREN
+Rule 22    nat -> ZERO
+Rule 23    expression -> nat nat
+
+\end{verbatim}
+
+El formato en el que se presenta la gramática es el utilizado por la libreria PLY para mostrar 
+el resultado de las reglas de parseo que se definieron. O sea, es la gramática generada en el 
+archivo parser.out de la librería
+
+\subsection{Tipo de gramática}
+
+Dado el problema planteado, la creación de un analizador sintáctico y semántico para el cálculo lambda, 
+y las alternativas en cuanto al tipo de parser que se podía utilizar, se optó por la implementación de 
+un parser de tipo LALR generado con la herramienta PLY, sobre el lenguaje de programacion Python.
+
+\subsection{Implementación de la solución}
+
+Como se puede ver en el punto anterior donde se lista la gramatica utilizada para intepretar expresiones del calculo lambda, se definio que las expresiones de tipo abstraccion deben ser encerradas entre parentesis para poder ser agregarlas a una aplicacion. Esta fue la forma de solucionar los conflictos shif/reduce y reduce/reduce q se producian con gramaticas alternativas, asi como los problemas relacionados con la interpretacion de la abstraccion y su alcance. 
+
+\subsection{Requerimientos de software}
+
+Para poder ejecutar el parser es necesario tener instalado Python 2.7 junto con libreria ply(version 3.7). 
+Es necesario, además, ejecutar el archivo requirements.txt con pip tal cual como se hizo en el taller.
+El trabajo se desarrolló sobre una plataforma linux y para poder testear una expresión en una terminal esta 
+debe ser pasada por stdin al script 'CLambda.sh'. 
+
+EJ: echo "expresion lambda" | ./CLambda.sh 
+
+\subsection{Casos de prueba} 
+
+Se trabajó sobre un conjunto de expresiones que nos permitió ir construyendo el parser de manera iterativa. 
+Desarrollamos los casos con una estrategia bottom-up, arrancando por los casos más básicos y simples como 
+true, 0 o succ(0) y, una vez que confirmamos que funcionaran correctamente, pasamos a probar expresiones más 
+complejas como las Lambdas y las aplicaciones. 
+
+A continuación, mostramos algunos de los casos que testeamos. El conjunto completo de nuestros tests se puede
+observar en la sección de Código Fuente, en el archivo test.py.
+
+\begin{verbatim}
+  
+Testeos orientados a tokens y casos básicos.
+  0
+  true
+  false
+  isZero(0)
+  succ(0)
+Testeos orientados a la semántica 
+  succ(succ(succ(succ(0))))
+  pred(pred(succ(0)))
+  if true then 0 else succ(pred(0))
+  if true then 0 else false
+  \z:Nat.z 0
+  \z:Nat.if z then 0 else succ(0) true
+  (\x:Bool.(\z:Nat.if x then z else succ(z))) 0 true
+Testeos orientados a las aplicaciones y lambdas
+  \z:Nat.z 0
+  (\x:Bool.(\z:Nat.if x then z else succ(z))) 0 true
+  \x:Nat->Nat. \y:Nat. (\z:Bool. if z then x y else 0)
+  \x:Nat.x
+  \z:Nat.if z then 0 else succ(0) iszero(0)
+  (\z:Nat.iszero((\x:Nat. pred(x)) z)) succ(0)
+
+\end{verbatim}
+
+\subsection{Conclusiones}
+ 
+Se pudo experimentar el desarrollo de un parser y sus complejidades. Dada la herramienta utilizada( PLY ) resulto facil generar una gramatica para poder realizar el anailisis sintactico de las expresiones que forman el calculo Lamda. Lo que la herramienta no soluciona y en lo que se encontraron dificultades es en el analisis semantico de las expresiones.  En ese punto fue necesario replantear varias veces la implementacion para ir mejorandola y realizando abstracciones para poder describir e interpretar correctamente el significado de las expresiones mas complejas. El analisis de las expresiones de tipo Lambda y las aplicaciones, tanto en el tipo como de valor resultante fueron los puntos en los que se debio reconsiderar desiciones y mejorar la implementacion varias veces. Tambien la forma en la que se iban arrastrando los contextos y como se van ligando las variables en cada expresion y sub expresion permitieron ejercitar la tematica de gramatica de atributos. 
