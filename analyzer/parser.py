@@ -1,22 +1,14 @@
 import ply.yacc as yacc
 from .lexer import tokens
-import objetoParseado2 as op
+import objetoParseado as op
 import sys,traceback
-
-
-# precedence = [
-#     ('left', 'LAMBDA')
-# ]
-
 
 def p_if_exp_then_exp_else_exp(p):
     'expression : IF expression THEN expression ELSE expression'
-    # print 'ifthenelse'
     p[0] = op.construirIfThenElse(p[2], p[4], p[6])
 
 def p_exp_nat(p):
     'expression : nat'
-    #print('p_exp_nat')
     p[0] = p[1]
 
 def p_exp_bool(p):
@@ -25,26 +17,19 @@ def p_exp_bool(p):
 
 def p_exp_apply(p):
     'expression : LPAREN lambda RPAREN subexp'
-    # print "lambda aplicada"
-    # print p[2]
-    # print p[4]
     p[0] = op.construirAplicacion(p[2], p[4])
 
 def p_exp_expression_lambda(p):
     'expression : lambda'
-    # print 'lambda comun'
     p[0] = p[1]
 
 def p_exp_variable_expresion(p):
     'expression : variable'    
-    # print 'var'
     p[0] = p[1]    
 
 def p_exp_variable_variable(p):
     'expression : variable variable'
-    # print 'var var'
     p[0] = op.construirAplicacion(p[1], [p[2]])
-    # p[0] = (p[1], p[2])
 
 def p_subexp_paren_lambda(p):
     'subexp : LPAREN lambda RPAREN subexp'
@@ -62,13 +47,8 @@ def p_subexp_empty(p):
     'subexp : '
     p[0] = []
 
-# def p_term_lparen_rparen(p):
-#     'expression : LPAREN expression RPAREN'
-#     p[0] = p[2]
-
 def p_exp_lambda(p):    
     'lambda : LAMBDA variable DOBLEDOT type DOT expression'
-    # print "contruyo lambda"
     p[0] = op.construirLambda(p[2], p[4], p[6])
 
 def p_exp_atomic_type(p):
@@ -109,18 +89,16 @@ def p_exp_pred(p):
 
 def p_exp_zero(p):
     'nat : ZERO'
-    # print 'zero'
     p[0] = op.construirZero()
 
 def p_exp_nat_nat(p):
     'expression : nat nat'
-    # print 'zero'
     p[0] = op.construirError('La parte izquierda de la aplicacion ('+p[1].getExpresion()+') no es una funcion con dominio en Nat')
     
     
 def p_error(p):
-    print ("Hubo un error en el parseo.")
-    print (p)
+    print "Hubo un error en el parseo."
+    print p
     parser.restart()
 
 # Build the parser
@@ -139,15 +117,5 @@ def apply_parser(string):
         else:
             return str(parseado.getExpresion()) + parseado.getTipo()
 
-    except :  
+    except:  
         traceback.print_exc(file=sys.stdout)
-        # print sys.exc_info()[0]          
-        # print sys.exc_info()[1]    
-        # print sys.exc_info()[2]    
-
-
-        #if parseado.getValor() is not None:
-            #return str(parseado.getValor())+':'+parseado.getTipo()
-            #return str(parseado.getValor())+':'+parseado.getTipo()
-        #else:
-            #return str(parseado.getExpresion())+':'+parseado.getTipo()

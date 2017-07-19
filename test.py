@@ -115,18 +115,31 @@ print 'Caso: (\\x:Nat->Nat.(\\y:Nat. (\\z:Bool.if z then x y else 0))) (\\j:Nat.
 
 print '\nTesteando ejemplos enunciado:\n'
 
-print parse('0')
-print parse('true')
-print parse('if true then 0 else false')
-print parse('\\x:Bool.if x then false else true')
-print parse('\\x:Nat.succ(0)')
-print parse('\\z:Nat.z')
-print parse('succ(succ(succ(0)))')
-print parse('x')
-print parse('succ(succ(pred(0)))')
-print parse('\\x:Nat.succ(x)')
-print parse('0 0')
-print parse('\\x:Nat->Nat.\\y:Nat.\\z:Bool.if z then x y else 0')
-print parse('(\\x:Nat->Nat.(\\y:Nat. (\\z:Bool.if z then x y else 0))) (\\j:Nat.succ(j)) succ(succ(succ(succ(succ(succ(succ(succ(0)))))))) true')
+assert parse('0') == '0:Nat'
+print 'Caso: 0 OK!'
+assert parse('true') == 'true:Bool'
+print 'Caso: true OK!'
+assert parse('if true then 0 else false') == 'Error: las dos opciones del if deben tener el mismo tipo'
+print 'Caso: if true then 0 else false OK!'
+assert parse('\\x:Bool.if x then false else true') == '\\x:Bool.if x then false else true:Bool->Bool'
+print 'Caso: \\x:Bool.if x then false else true OK!'
+assert parse('\\x:Nat.succ(0)') == '\\x:Nat.succ(0):Nat->Nat'
+print 'Caso: \\x:Nat.succ(0) OK!'
+assert parse('\\z:Nat.z') == '\\z:Nat.z:Nat->Nat'
+print 'Caso: \\z:Nat.z OK!'
+assert parse('succ(succ(succ(0)))') == 'succ(succ(succ(0))):Nat'
+print 'Caso: succ(succ(succ(0))) OK!'
+assert parse('x') == 'Error: el termino no es cerrado (x esta libre)'
+print 'Caso: x OK!'
+assert parse('succ(succ(pred(0)))') == 'succ(succ(0)):Nat'
+print 'Caso: succ(succ(pred(0))) OK!'
+assert parse('\\x:Nat.succ(x)') == '\\x:Nat.succ(x):Nat->Nat'
+print 'Caso: \\x:Nat.succ(x) OK!'
+assert parse('0 0') == 'Error: La parte izquierda de la aplicacion (0) no es una funcion con dominio en Nat'
+print 'Caso: 0 0 OK!'
+assert parse('\\x:Nat->Nat.\\y:Nat.\\z:Bool.if z then x y else 0') == '\\x:(Nat->Nat).\\y:Nat.\\z:Bool.if z then x y else 0:(Nat->Nat)->Nat->Bool->Nat'
+print 'Caso: \\x:Nat->Nat.\\y:Nat.\\z:Bool.if z then x y else 0 OK!'
+assert parse('(\\x:Nat->Nat.(\\y:Nat. (\\z:Bool.if z then x y else 0))) (\\j:Nat.succ(j)) succ(succ(succ(succ(succ(succ(succ(succ(0)))))))) true') == 'succ(succ(succ(succ(succ(succ(succ(succ(succ(0))))))))):Nat'
+print 'Caso: (\\x:Nat->Nat.(\\y:Nat. (\\z:Bool.if z then x y else 0))) (\\j:Nat.succ(j)) succ(succ(succ(succ(succ(succ(succ(succ(0)))))))) true OK!'
 
 print '\nTesting finalizado, todos los casos correctos!\n'
